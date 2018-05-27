@@ -1,0 +1,35 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>New English</title>
+  <meta name="description" content="The HTML5 Herald">
+  <meta name="author" content="SitePoint">
+
+  <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+  <![endif]-->
+  <script src="js/parser.js"></script>
+  <script src="js/converter.js"></script>
+</head>
+
+<body onload="prepare()">
+  <div>
+    <h1>Converter from old English to new English</h1>
+    <textarea id="input" rows="20" cols="100"></textarea>
+  </div>
+  <div>
+    <input id="withStress" type="checkbox">
+    <label for="withStress">with stress</label>
+    <input id="cutspell" type="checkbox">
+    <label for="cutspell">cutspelling</label>
+    <button id="clickbutton" type="button">Convert</button>
+  </div>
+  <div>
+    <p>Output</p>
+    <textarea readonly id="output" rows="20" cols="100"></textarea>
+  </div>
+</body>
+</html>
