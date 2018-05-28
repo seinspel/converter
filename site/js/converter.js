@@ -117,7 +117,7 @@ function convertText(text, with_stress, cutspell) {
             if (!phons) {
                 if (/[a-zA-Z]/.test(chunk)) {
                     // chunk is a real word but it's not in the dictionary
-                    converted.push('???' + chunk + '???')
+                    converted.push(`???${chunk}???`)
                 } else {
                     converted.push(chunk)
                 }
@@ -128,11 +128,7 @@ function convertText(text, with_stress, cutspell) {
         if (converted.length === 1) {
             result += converted[0]
         } else {
-            result += '('
-            for (let version of converted) {
-                result += version + '/'
-            }
-            result += ')'
+            result += `(${converted.join('/')})`
         }
     }
     return result
