@@ -36,7 +36,7 @@ function lookup(word) {
     return versions
 }
 
-function splitToPhonemes(letters) {
+function decodePhonemes(letters) {
     if (!letters) {
         return
     }
@@ -82,7 +82,7 @@ function splitToPhonemes(letters) {
             break
         case 'T':
         case 'Z':
-            if (letters[i + 1] === 'H') {
+            if (letters[i + 1] === 'H' && (letters[i + 2] !=== 'H' || letters[i + 3] === 'H')) {
                 phons.push(letters.slice(i, i + 2))
                 i++
             } else {
@@ -113,7 +113,7 @@ function convertText(text, with_stress, cutspell) {
         const lookup_results = lookup(chunk)
         let converted = []
         for (let letters of lookup_results) {
-            const phons = splitToPhonemes(letters)
+            const phons = decodePhonemes(letters)
             if (!phons) {
                 if (/[a-zA-Z]/.test(chunk)) {
                     // chunk is a real word but it's not in the dictionary
