@@ -27,21 +27,15 @@ function convert(symbol, behind, ahead1, ahead2, num_syllables, with_stress, cut
     const has_stress = (symbol.substr(2, 1) === '1')
     const symbol_nos = symbol.substr(0, 2)
     const ahead1_nos = ahead1 ? ahead1.substr(0, 2) : ''
-    function pickStress(ws, wos) {
-        if (with_stress && has_stress && num_syllables >= 2) {
-            return ws
-        } else {
-            return wos
-        }
-    }
+    const stressed = (with_stress && has_stress && num_syllables >= 2)
     switch (symbol_nos) {
     case 'AA':
         if (cutspell && ahead1 === 'R' && countVowels([ahead2]) === 0) {
-            return pickStress('á', 'a')
+            return stressed ? 'á' : 'a'
         }
-        return pickStress('áa', 'aa')
+        return stressed ? 'áa' : 'aa'
     case 'AE':
-        return pickStress('á', 'a')
+        return stressed ? 'á' : 'a'
     case 'AH':
         if (cutspell && !has_stress && num_syllables >= 2) {
             switch (behind + '/' + ahead1) {
@@ -55,22 +49,22 @@ function convert(symbol, behind, ahead1, ahead2, num_syllables, with_stress, cut
                 return ''
             }
         }
-        return pickStress('ý', 'y')
+        return stressed ? 'ý' : 'y'
     case 'AO':
         if (ahead1 === 'R') {
-            return pickStress('ó', 'o')
+            return stressed ? 'ó' : 'o'
         }
-        return pickStress('áa', 'aa')
+        return stressed ? 'áa' : 'aa'
     case 'AW':
         if (ahead1_nos === 'UH' || ahead1_nos === 'UW') {
-            return pickStress('áw', 'aw')
+            return stressed ? 'áw' : 'aw'
         }
-        return pickStress('áu', 'au')
+        return stressed ? 'áu' : 'au'
     case 'AY':
         if (ahead1_nos === 'IH' || ahead1_nos === 'IY') {
-            return pickStress('áj', 'aj')
+            return stressed ? 'áj' : 'aj'
         }
-        return pickStress('ái', 'ai')
+        return stressed ? 'ái' : 'ai'
     case 'B':
         return 'b'
     case 'C':
@@ -83,7 +77,7 @@ function convert(symbol, behind, ahead1, ahead2, num_syllables, with_stress, cut
     case 'Q':
         return 'q'
     case 'EH':
-        return pickStress('é', 'e')
+        return stressed ? 'é' : 'e'
     case 'ER':
         if (cutspell && !has_stress && num_syllables >=2 && countVowels([ahead1]) == 0) {
             switch (behind) {
@@ -95,12 +89,12 @@ function convert(symbol, behind, ahead1, ahead2, num_syllables, with_stress, cut
                 return 'r'
             }
         }
-        return pickStress('ýr', 'yr')
+        return stressed ? 'ýr' : 'yr'
     case 'EY':
         if (ahead1_nos === 'IH' || ahead1_nos === 'IY') {
-            return pickStress('éj', 'ej')
+            return stressed ? 'éj' : 'ej'
         }
-        return pickStress('éi', 'ei')
+        return stressed ? 'éi' : 'ei'
     case 'F':
         return 'f'
     case 'G':
@@ -108,14 +102,14 @@ function convert(symbol, behind, ahead1, ahead2, num_syllables, with_stress, cut
     case 'HH':
         return 'h'
     case 'IH':
-        return pickStress('í', 'i')
+        return stressed ? 'í' : 'i'
     case 'IY':
         if (ahead1_nos === 'IH' || ahead1_nos === 'IY') {
-            return pickStress('íj', 'ij')
+            return stressed ? 'íj' : 'ij'
         } else if (cutspell && !ahead1 && !has_stress) {
             return 'i'
         }
-        return pickStress('íi', 'ii')
+        return stressed ? 'íi' : 'ii'
     case 'J':
         return 'dj'
     case 'K':
@@ -130,16 +124,17 @@ function convert(symbol, behind, ahead1, ahead2, num_syllables, with_stress, cut
         return 'ng'
     case 'OW':
         if (ahead1_nos === 'UH' || ahead1_nos === 'UW') {
-            return pickStress('ów', 'ow')
+            return stressed ? 'ów' : 'ow'
         } else if (ahead1_nos === 'R' && countVowels([ahead2]) == 0) {
-            return pickStress('ó', 'o')
+            // necessary for "foreskin"
+            return stressed ? 'ó' : 'o'
         }
-        return pickStress('óu', 'ou')
+        return stressed ? 'óu' : 'ou'
     case 'OY':
         if (ahead1_nos === 'IH' || ahead1_nos === 'IY') {
-            return pickStress('ój', 'oj')
+            return stressed ? 'ój' : 'oj'
         }
-        return pickStress('ói', 'oi')
+        return stressed ? 'ói' : 'oi'
     case 'P':
         return 'p'
     case 'R':
@@ -153,9 +148,9 @@ function convert(symbol, behind, ahead1, ahead2, num_syllables, with_stress, cut
     case 'TH':
         return 'c'
     case 'UH':
-        return pickStress('ú', 'u')
+        return stressed ? 'ú' : 'u'
     case 'UW':
-        return pickStress('úu', 'uu')
+        return stressed ? 'úu' : 'uu'
     case 'V':
         return 'v'
     case 'W':
