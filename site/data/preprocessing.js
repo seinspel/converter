@@ -65,8 +65,8 @@ async function process (dictFile) {
         pronun = minimize(` ${pronun} `)
         output.push(`"${word}":"${pronun}",`)
     }
-    // TODO: remove trailing comme in last element
-    // output[output.length - 1] = output.slice(-1)[0].substr(-1, 1)
+    // remove the trailing comma from the last element
+    output[output.length - 1] = output.slice(-1)[0].slice(0, -1)
     output.push('}')
     save('dictionary.json', output.join('\n'))
 }
