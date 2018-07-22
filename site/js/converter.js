@@ -110,7 +110,7 @@ function tests () {
     let inputField = document.getElementById('input')
     inputField.value = `foreskin seeing dying saying behalf suing teriyaki
 evacuate boyhood adhere bloodshed midyear knowing away short awestruck withhold
-adulthood malevolent criminal fewer lure neurology careless`
+adulthood malevolent criminal fewer lure neurology careless what's think`
 }
 
 function convertText(text, with_stress, cutspell) {
