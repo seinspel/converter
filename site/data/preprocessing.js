@@ -57,6 +57,7 @@ async function process (dictFile) {
                 continue
             }
         }
+        // TODO: split entries that containt a space into two entries
         const versionMatches = word.match(/^([^(]+)\((.)\)/i)
         if (versionMatches) {
             // console.log(`${versionMatches[1]} and ${versionMatches[2]}`)
@@ -74,12 +75,19 @@ async function process (dictFile) {
 
 function minimize (pronun) {
     let out = pronun
+    // needed for disambiguation
     out = out.replace(/ N /g, ' NN ')
+
+    // save on space
     out = out.replace(/ JH /g, ' J ')
     out = out.replace(/ CH /g, ' C ')
     out = out.replace(/ DH /g, ' Q ')
     out = out.replace(/ SH /g, ' X ')
+
+    // remove marker for no stress
     out = out.replace(/0/g, '')
+    // TODO: move all conversion functionality here, such that the dictionary
+    // can just be used as is without any post-processing
     return out.replace(/ /g, '')  // remove all spaces
 }
 

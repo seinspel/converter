@@ -23,36 +23,41 @@ function countVowels(phons) {
     return num_vowels
 }
 
-function convert(symbol, behind, ahead1, ahead2, num_syllables, with_stress, cutspell) {
-    const has_stress = (symbol.substr(2, 1) === '1')
+function convert (symbol, behind, ahead1, ahead2, num_syllables, with_stress,
+    cutspell) {
+    const hasPrimary = (symbol.substr(2, 1) === '1')
+    const hasSecondary = (symbol.slice(-1) === '2')
     const symbol_nos = symbol.substr(0, 2)
     const ahead1_nos = ahead1 ? ahead1.substr(0, 2) : ''
-    const stressed = (with_stress && has_stress && num_syllables >= 2)
+    const stressed = (with_stress && hasPrimary && num_syllables >= 2)
+    // whether or not the next phoneme is intervocalic
+    const nextIntervocalic = (countVowels([ahead2]) !== 0)
+    const schwa = 'e'
     switch (symbol_nos) {
     case 'AA':
-        if (cutspell && ahead1 === 'R' && countVowels([ahead2]) === 0) {
-            return stressed ? 'á' : 'a'
+        if (ahead1 === 'R') {
+            return stressed ? 'áa' : 'aa'
         }
         return stressed ? 'áa' : 'aa'
     case 'AE':
         return stressed ? 'á' : 'a'
     case 'AH':
-        if (cutspell && !has_stress && num_syllables >= 2) {
-            switch (behind + '/' + ahead1) {
-            case 'M/NN':
-            case 'W/L':
-            case 'T/NN':
-            case 'X/NN':
-            case 'ZH/NN':
-            case 'Z/NN':
-            case 'S/NN':
-                return ''
+        if (!hasPrimary && !hasSecondary && num_syllables >= 2) {
+            if (cutspell && !nextIntervocalic && behind !== 'L') {
+                switch (ahead1) {
+                case 'NN':
+                case 'L':
+                case 'M':
+                case 'NG':
+                    return ''
+                }
             }
+            return schwa
         }
-        return stressed ? 'ý' : 'y'
+        return stressed ? 'ó' : 'o'
     case 'AO':
         if (ahead1 === 'R') {
-            return stressed ? 'ó' : 'o'
+            return stressed ? 'óo' : 'oo'
         }
         return stressed ? 'áa' : 'aa'
     case 'AW':
@@ -62,7 +67,7 @@ function convert(symbol, behind, ahead1, ahead2, num_syllables, with_stress, cut
         return stressed ? 'áu' : 'au'
     case 'AY':
         if (ahead1_nos === 'IH' || ahead1_nos === 'IY') {
-            return stressed ? 'áj' : 'aj'
+            return stressed ? 'áy' : 'ay'
         }
         return stressed ? 'ái' : 'ai'
     case 'B':
@@ -70,31 +75,27 @@ function convert(symbol, behind, ahead1, ahead2, num_syllables, with_stress, cut
     case 'C':
         return 'tx'
     case 'D':
-        if (ahead1 === 'Y') {
-            return 'dh'
-        }
         return 'd'
     case 'Q':
         return 'q'
     case 'EH':
+        if (ahead1 === 'R') {
+            return stressed ? 'éi' : 'ei'
+        }
         return stressed ? 'é' : 'e'
     case 'ER':
-        if (cutspell && !has_stress && num_syllables >=2 && countVowels([ahead1]) == 0) {
-            switch (behind) {
-            case 'M':
-            case 'NN':
-            case 'Q':
-            case 'T':
-            case 'K':
-                return 'r'
-            }
+        if (cutspell && !hasPrimary && num_syllables >=2 && (countVowels([ahead1]) === 0)) {
+            return 'r'
         }
-        return stressed ? 'ýr' : 'yr'
+        return stressed ? 'úr' : 'ur'
     case 'EY':
         if (ahead1_nos === 'IH' || ahead1_nos === 'IY') {
-            return stressed ? 'éj' : 'ej'
+            return stressed ? 'éy' : 'ey'
+        } else if (ahead1 === 'R') {
+            return stressed ? 'éi' : 'ei'
         }
         return stressed ? 'éi' : 'ei'
+        // return stressed ? 'ée' : 'ee'
     case 'F':
         return 'f'
     case 'G':
@@ -102,11 +103,16 @@ function convert(symbol, behind, ahead1, ahead2, num_syllables, with_stress, cut
     case 'HH':
         return 'h'
     case 'IH':
+        if (ahead1 === 'R') {
+            return stressed ? 'íi' : 'ii'
+        }
         return stressed ? 'í' : 'i'
     case 'IY':
-        if (ahead1_nos === 'IH' || ahead1_nos === 'IY') {
-            return stressed ? 'íj' : 'ij'
-        } else if (cutspell && !ahead1 && !has_stress) {
+        if (ahead1 === 'R' && !nextIntervocalic) {
+            return stressed ? 'íi' : 'ii'
+        } else if (ahead1_nos === 'IH' || ahead1_nos === 'IY') {
+            return stressed ? 'íy' : 'iy'
+        } else if (cutspell && !ahead1 && !hasPrimary) {
             return 'i'
         }
         return stressed ? 'íi' : 'ii'
@@ -123,16 +129,17 @@ function convert(symbol, behind, ahead1, ahead2, num_syllables, with_stress, cut
     case 'NG':
         return 'ng'
     case 'OW':
-        if (ahead1_nos === 'UH' || ahead1_nos === 'UW') {
-            return stressed ? 'ów' : 'ow'
-        } else if (ahead1_nos === 'R' && countVowels([ahead2]) == 0) {
+        if (ahead1_nos === 'R' && !nextIntervocalic) {
             // necessary for "foreskin"
-            return stressed ? 'ó' : 'o'
+            return stressed ? 'óo' : 'oo'
+        } else if (ahead1_nos === 'UH' || ahead1_nos === 'UW') {
+            return stressed ? 'ów' : 'ow'
         }
         return stressed ? 'óu' : 'ou'
+        // return stressed ? 'óo' : 'oo'
     case 'OY':
         if (ahead1_nos === 'IH' || ahead1_nos === 'IY') {
-            return stressed ? 'ój' : 'oj'
+            return stressed ? 'óy' : 'oy'
         }
         return stressed ? 'ói' : 'oi'
     case 'P':
@@ -148,19 +155,30 @@ function convert(symbol, behind, ahead1, ahead2, num_syllables, with_stress, cut
     case 'TH':
         return 'c'
     case 'UH':
+        if (ahead1 === 'R' && !nextIntervocalic) {
+            return stressed ? 'úu' : 'uu'
+        }
+        if (ahead1 !== 'R' && !hasPrimary && !hasSecondary) {
+            return schwa
+        }
         return stressed ? 'ú' : 'u'
     case 'UW':
+        if (ahead1 === 'R') {
+            return stressed ? 'úu' : 'uu'
+        } else if (ahead1_nos === 'ER') {
+            return stressed ? 'úw' : 'uw'
+        }
         return stressed ? 'úu' : 'uu'
     case 'V':
         return 'v'
     case 'W':
         return 'w'
     case 'Y':
-        return 'j'
+        return 'y'
     case 'Z':
         return 'z'
     case 'ZH':
-        return 'jh'
+        return 'j'
     default:
         return symbol
     }

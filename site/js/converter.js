@@ -6,11 +6,12 @@ function prepare() {
     // set handler for 'convert' button
     let clickButton = document.getElementById('clickbutton')
     clickButton.addEventListener('click', process, false)
+    document.getElementById('testcases').addEventListener('click', tests, false)
 
     // download dictionary
     let oReq = new XMLHttpRequest()
     oReq.addEventListener('load', loadDict)
-    oReq.open('GET', '/data/cmudict.json')
+    oReq.open('GET', '/data/dictionary.json')
     oReq.send()
 }
 
@@ -67,7 +68,7 @@ function decodePhonemes(letters) {
         case 'I':
         case 'O':
         case 'U':
-            if (letters[i + 2] === '1') {
+            if (letters[i + 2] === '1' || letters[i + 2] === '2') {
                 phons.push(letters.slice(i, i + 3))
                 i += 2
             } else {
@@ -82,7 +83,7 @@ function decodePhonemes(letters) {
             break
         case 'T':
         case 'Z':
-            if (letters[i + 1] === 'H' && (letters[i + 2] !=== 'H' || letters[i + 3] === 'H')) {
+            if (letters[i + 1] === 'H' && (letters[i + 2] !== 'H' || letters[i + 3] === 'H')) {
                 phons.push(letters.slice(i, i + 2))
                 i++
             } else {
@@ -103,6 +104,13 @@ function process() {
     const result = convertText(text, with_stress, cutspell)
     let output = document.getElementById('output')
     output.value = result
+}
+
+function tests () {
+    let inputField = document.getElementById('input')
+    inputField.value = `foreskin seeing dying saying behalf suing teriyaki
+evacuate boyhood adhere bloodshed midyear knowing away short awestruck withhold
+adulthood malevolent criminal fewer lure neurology careless`
 }
 
 function convertText(text, with_stress, cutspell) {
