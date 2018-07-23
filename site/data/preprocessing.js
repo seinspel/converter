@@ -86,8 +86,10 @@ function minimize (pronun) {
 
     // remove marker for no stress
     out = out.replace(/0/g, '')
-    // TODO: move all conversion functionality here, such that the dictionary
-    // can just be used as is without any post-processing
+    // TODO: introduce additional phonemes for r-colored vowels:
+    // AR, OR, UR, IR
+    // TODO: enact cot-caught-merger and merry-marry-Mary-merger
+    // TODO: maybe get rid of UH0 completely
     return out.replace(/ /g, '')  // remove all spaces
 }
 
