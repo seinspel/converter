@@ -1,5 +1,8 @@
 'use strict'
 
+// use like this (define an array with 2 entries for each set):
+// const stress = stressed ? 0 : 1
+// lexicalSets.DRESS[stress]
 lexicalSets = {
     TRAP: 'a',
     DRESS: 'e',
