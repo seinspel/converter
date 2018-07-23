@@ -62,12 +62,12 @@ function convert (symbol, behind, ahead1, ahead2, num_syllables, with_stress,
         return stressed ? 'áa' : 'aa'
     case 'AW':
         if (ahead1_nos === 'UH' || ahead1_nos === 'UW') {
-            return stressed ? 'áw' : 'aw'
+            return stressed ? 'áu\'' : 'au\''
         }
         return stressed ? 'áu' : 'au'
     case 'AY':
         if (ahead1_nos === 'IH' || ahead1_nos === 'IY') {
-            return stressed ? 'áy' : 'ay'
+            return stressed ? 'ái\'' : 'ai\''
         }
         return stressed ? 'ái' : 'ai'
     case 'B':
@@ -90,7 +90,7 @@ function convert (symbol, behind, ahead1, ahead2, num_syllables, with_stress,
         return stressed ? 'úr' : 'ur'
     case 'EY':
         if (ahead1_nos === 'IH' || ahead1_nos === 'IY') {
-            return stressed ? 'éy' : 'ey'
+            return stressed ? 'éi\'' : 'ei\''
         } else if (ahead1 === 'R') {
             return stressed ? 'éi' : 'ei'
         }
@@ -111,7 +111,7 @@ function convert (symbol, behind, ahead1, ahead2, num_syllables, with_stress,
         if (ahead1 === 'R' && !nextIntervocalic) {
             return stressed ? 'íi' : 'ii'
         } else if (ahead1_nos === 'IH' || ahead1_nos === 'IY') {
-            return stressed ? 'íy' : 'iy'
+            return stressed ? 'íi\'' : 'ii\''
         } else if (cutspell && !ahead1 && !hasPrimary) {
             return 'i'
         }
@@ -133,13 +133,13 @@ function convert (symbol, behind, ahead1, ahead2, num_syllables, with_stress,
             // necessary for "foreskin"
             return stressed ? 'óo' : 'oo'
         } else if (ahead1_nos === 'UH' || ahead1_nos === 'UW') {
-            return stressed ? 'ów' : 'ow'
+            return stressed ? 'óu\'' : 'ou\''
         }
         return stressed ? 'óu' : 'ou'
         // return stressed ? 'óo' : 'oo'
     case 'OY':
         if (ahead1_nos === 'IH' || ahead1_nos === 'IY') {
-            return stressed ? 'óy' : 'oy'
+            return stressed ? 'ói\'' : 'oi\''
         }
         return stressed ? 'ói' : 'oi'
     case 'P':
@@ -166,7 +166,7 @@ function convert (symbol, behind, ahead1, ahead2, num_syllables, with_stress,
         if (ahead1 === 'R') {
             return stressed ? 'úu' : 'uu'
         } else if (ahead1_nos === 'ER') {
-            return stressed ? 'úw' : 'uw'
+            return stressed ? 'úu\'' : 'uu\''
         }
         return stressed ? 'úu' : 'uu'
     case 'V':
