@@ -24,5 +24,6 @@ lexicalSets = {
     NURSE: 'ur',
     LURE: 'uur',
     happY: 'i',
+    lettER: 'ur',
     commA: 'e'
 }
