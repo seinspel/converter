@@ -66,6 +66,9 @@ async function process (dictFile) {
         pronun = minimize(` ${pronun} `)
         output.push(`"${word}":"${pronun}",`)
     }
+    // TODO: use JSON.stringify to generate output. use the most compact
+    //       option. `dictionary.json` is not meant to be human-readable.
+
     // remove the trailing comma from the last element
     output[output.length - 1] = output.slice(-1)[0].slice(0, -1)
     output.push('}')
