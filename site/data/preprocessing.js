@@ -34,7 +34,7 @@ function process () {
 }
 
 
-/*
+/**
  * Parse the dictionary file
  *
  * @param {File} dictFile File object for the dictionary file
@@ -98,7 +98,7 @@ function minimize (pronun) {
 }
 
 
-/*
+/**
  * Create a file and let the user download it
  *
  * @param {string} filename Name of the file that is downloaded
