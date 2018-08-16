@@ -3,7 +3,7 @@
 function prepare () {
     // set handler for 'process' button
     let clickButton = document.getElementById('process')
-    clickButton.addEventListener('click', load, false)
+    clickButton.addEventListener('click', process, false)
 }
 
 
@@ -27,16 +27,24 @@ function readFile (file) {
 }
 
 
-function load () {
+function process () {
     let dictFile = document.getElementById('cmudict').files[0]
-    process(dictFile)
+    let dict = parse(dictFile)
+    save('dictionary.json', JSON.stringify(dict))
 }
 
 
-async function process (dictFile) {
+/*
+ * Parse the dictionary file
+ *
+ * @param {File} dictFile File object for the dictionary file
+ *
+ * @return {object} the parsed dictionary as an object
+ */
+async function parse (dictFile) {
     console.log('processing')
-    let rawString = await readFile(dictFile)
-    let output = ['{']
+    const rawString = await readFile(dictFile)
+    let dict = {}
     const lines = rawString.split(/[\r\n]+/g)
     const allowedApostrophes = [
         '\'ALLO', '\'BOUT', '\'CAUSE', '\'COURSE', '\'CUSE', '\'EM', '\'FRISCO',
@@ -63,16 +71,9 @@ async function process (dictFile) {
             // console.log(`${versionMatches[1]} and ${versionMatches[2]}`)
             word = `${versionMatches[1]}${versionMatches[2]}`
         }
-        pronun = minimize(` ${pronun} `)
-        output.push(`"${word}":"${pronun}",`)
+        dict[word] = minimize(` ${pronun} `)
     }
-    // TODO: use JSON.stringify to generate output. use the most compact
-    //       option. `dictionary.json` is not meant to be human-readable.
-
-    // remove the trailing comma from the last element
-    output[output.length - 1] = output.slice(-1)[0].slice(0, -1)
-    output.push('}')
-    save('dictionary.json', output.join('\n'))
+    return dict
 }
 
 
@@ -97,6 +98,12 @@ function minimize (pronun) {
 }
 
 
+/*
+ * Create a file and let the user download it
+ *
+ * @param {string} filename Name of the file that is downloaded
+ * @param {string} data     Content of the file
+ */
 function save (filename, data) {
     var blob = new Blob([data], {type: 'text/plain'})
     if (window.navigator.msSaveOrOpenBlob) {
