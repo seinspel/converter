@@ -117,3 +117,132 @@ function save (filename, data) {
         document.body.removeChild(elem)
     }
 }
+
+
+/**
+ * Convert pronunciation symbols according to spelling rules
+ *
+ * @param {string} pronun The pronunciation as a string
+ *
+ * @return {Array} converted pronunciation symbols
+ */
+function convert (pronun) {
+    let out = []
+    const symbols = pronun.split(' ')
+    const numSyllables = countVowels(symbols)
+    for (let i = 0; i < symbols.length; i++) {
+        const symbol = symbols[i]
+        const symbol_nos = symbol.substr(0, 2)
+        const behind = symbols[i-1]
+        const ahead1 = symbols[i+1]
+        const ahead2 = symbols[i+2]
+        const stress = symbol.substr(2, 1)
+        // whether or not the next phoneme is intervocalic
+        const nextIntervocalic = (countVowels([ahead2]) !== 0)
+        switch (symbol_nos) {
+        case 'AA':
+            if (ahead1 === 'R') {
+                out.push('AR' + stress)
+                i++  // skip the next symbol
+                continue
+            }
+            break
+        case 'AE':
+            if (ahead1 === 'R') {
+                out.push('ER' + stress)
+                i++  // skip the next symbol
+                continue
+            }
+            break
+        case 'AH':
+            if (stress === '0' && numSyllables >= 2) {
+                if (!nextIntervocalic && behind !== 'L') {
+                    switch (ahead1) {
+                    case 'N':
+                        out.push('EN')
+                        i++
+                        continue
+                    case 'L':
+                        out.push('EL')
+                        i++
+                        continue
+                    case 'M':
+                        out.push('EM')
+                        i++
+                        continue
+                    }
+                }
+            }
+            break
+        case 'AO':
+            if (ahead1 === 'R') {
+                out.push('OR' + stress)
+                i++  // skip the next symbol
+                continue
+            }
+            out.push('AA' + stress)
+            continue
+        case 'EH':
+            if (ahead1 === 'R') {
+                out.push('ER' + stress)
+                i++  // skip the next symbol
+                continue
+            }
+            break
+        case 'ER':
+            // if (!hasPrimary && numSyllables >=2 && (countVowels([ahead1]) === 0)) {
+            //     out.push('R')
+            //     continue
+            // }
+            out.push('YR' + stress)
+            continue
+        case 'EY':
+            if (ahead1 === 'R') {
+                out.push('ER' + stress)
+                i++  // skip the next symbol
+                continue
+            }
+            break
+        case 'IH':
+            if (ahead1 === 'R') {
+                out.push('IR' + stress)
+                i++  // skip the next symbol
+                continue
+            }
+            break
+        case 'IY':
+            if (ahead1 === 'R') {
+                out.push('IR' + stress)
+                i++  // skip the next symbol
+                continue
+            }
+            break
+        case 'OW':
+            if (ahead1 === 'R' && !nextIntervocalic) {
+                out.push('OR' + stress)
+                i++  // skip the next symbol
+                continue
+            }
+            break
+        case 'UH':
+            if (ahead1 === 'R') {
+                out.push('YR' + stress)
+                i++  // skip the next symbol
+                continue
+            }
+            break
+        case 'UW':
+            if (ahead1 === 'R') {
+                out.push('UR' + stress)
+                i++  // skip the next symbol
+                continue
+            }
+            break
+        default:
+            break
+        }
+        // do nothing
+        out.push(symbol)
+    }
+    return out
+}
