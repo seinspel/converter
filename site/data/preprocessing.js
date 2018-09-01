@@ -66,37 +66,67 @@ function parse (rawString) {
                 continue
             }
         }
-        // TODO: split entries that containt a space into two entries
+        // TODO: split entries that contain a space into two entries
         const versionMatches = word.match(/^([^(]+)\((.)\)/i)
         if (versionMatches) {
+            const versionWord = versionMatches[1]
+            const versionNum = versionMatches[2]
+
             // console.log(`${versionMatches[1]} and ${versionMatches[2]}`)
-            word = `${versionMatches[1]}${versionMatches[2]}`
+            if (versionNum === '1') {
+                const existingPronun = dict[versionWord]
+                dict[versionWord] = [existingPronun, convert(pronun)]
+            } else {
+                dict[versionWord].push(convert(pronun))
+            }
+        } else {
+            dict[word] = convert(pronun)
         }
-        // dict[word] = minimize(` ${pronun} `)
-        dict[word] = convert(pronun)
     }
-    return dict
+    dictionaryImprovement(dict)
+    return minimize(dict)
 }
 
 
-function minimize (pronun) {
-    let out = pronun
-    // needed for disambiguation
-    out = out.replace(/ N /g, ' NN ')
+/**
+ * Convert the symbols based on two letters to one-letter symbols
+ */
+function minimize (dict) {
+    let minimizedDict = {}
+    for (let word in dict) {
+        if (dict[word][0] instanceof Array) {  // there were multiple pronunciations
+            minimizedDict[word] = []
+            for (const pronun of dict[word]) {
+                let out = ''
+                for (const symbol of pronun) {
+                    out += ARPABET_ONE_LETTER[symbol.substr(0, 2)] + symbol.substr(2, 1)
+                }
+                minimizedDict[word].push(out)
+            }
+        } else {
+            let out = ''
+            for (const symbol of dict[word]) {
+                out += ARPABET_ONE_LETTER[symbol.substr(0, 2)] + symbol.substr(2, 1)
+            }
+            minimizedDict[word] = out
+        }
+    }
+    return minimizedDict
+}
 
-    // save on space
-    out = out.replace(/ JH /g, ' J ')
-    out = out.replace(/ CH /g, ' C ')
-    out = out.replace(/ DH /g, ' Q ')
-    out = out.replace(/ SH /g, ' X ')
 
-    // remove marker for no stress
-    out = out.replace(/0/g, '')
-    // TODO: introduce additional phonemes for r-colored vowels:
-    // AR, OR, UR, IR
-    // TODO: enact cot-caught-merger and merry-marry-Mary-merger
-    // TODO: maybe get rid of UH0 completely
-    return out.replace(/ /g, '')  // remove all spaces
+/**
+ * Heuristics to improve the dictionary
+ */
+function dictionaryImprovement (dict) {
+    for (let word in dict) {
+        if (dict[word][0] instanceof Array) {  // there were multiple pronunciations
+        } else {  // only one pronunciation
+            if (word === 'LURE') {
+                dict[word] = ['L', 'UW1', 'R']
+            }
+        }
+    }
 }
 
 
