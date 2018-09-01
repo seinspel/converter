@@ -27,10 +27,12 @@ function readFile (file) {
 }
 
 
-function process () {
+async function process () {
     let dictFile = document.getElementById('cmudict').files[0]
-    let dict = parse(dictFile)
-    save('dictionary.json', JSON.stringify(dict))
+    const rawString = await readFile(dictFile)
+    let dict = parse(rawString)
+    console.log(dict)
+    // save('dictionary.json', JSON.stringify(dict))
 }
 
 
@@ -41,9 +43,8 @@ function process () {
  *
  * @return {object} the parsed dictionary as an object
  */
-async function parse (dictFile) {
+function parse (rawString) {
     console.log('processing')
-    const rawString = await readFile(dictFile)
     let dict = {}
     const lines = rawString.split(/[\r\n]+/g)
     const allowedApostrophes = [
@@ -71,7 +72,8 @@ async function parse (dictFile) {
             // console.log(`${versionMatches[1]} and ${versionMatches[2]}`)
             word = `${versionMatches[1]}${versionMatches[2]}`
         }
-        dict[word] = minimize(` ${pronun} `)
+        // dict[word] = minimize(` ${pronun} `)
+        dict[word] = convert(pronun)
     }
     return dict
 }
@@ -116,6 +118,22 @@ function save (filename, data) {
         elem.click()
         document.body.removeChild(elem)
     }
+}
+
+const vowels = ['AA', 'AE', 'AH', 'AO', 'AW', 'AY', 'EH', 'ER', 'EY', 'IH', 'IY', 'OW', 'OY', 'UH',
+    'UW']
+
+/**
+ * Returns the number of vowels in the given pronunciation
+ */
+function countVowels(phons) {
+    let num_vowels = 0
+    for (let phon of phons) {
+        if (phon && vowels.indexOf(phon.substr(0, 2)) !== -1) {
+            num_vowels++
+        }
+    }
+    return num_vowels
 }
 
 
