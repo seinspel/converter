@@ -123,7 +123,7 @@ function dictionaryImprovement (dict) {
         if (dict[word][0] instanceof Array) {  // there were multiple pronunciations
         } else {  // only one pronunciation
             if (word === 'LURE') {
-                dict[word] = ['L', 'UW1', 'R']
+                dict[word] = ['L', 'UR1']
             }
         }
     }
@@ -262,6 +262,9 @@ function convert (pronun) {
             if (ahead1 === 'R') {
                 out.push('IR' + stress)
                 i++  // skip the next symbol
+                continue
+            } else if (!ahead1 && stress === '0') {
+                out.push('II')
                 continue
             }
             break
