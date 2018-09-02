@@ -67,6 +67,7 @@ function parse (rawString) {
                 console.log(`excluded: "${line}"`)
                 continue
             }
+            pronun = '\' ' + pronun
         }
         // TODO: split entries that contain a space into two entries
         const versionMatches = word.match(/^([^(]+)\((.)\)/i)
@@ -112,21 +113,6 @@ function minimize (dict) {
         }
     }
     return minimizedDict
-}
-
-
-/**
- * Heuristics to improve the dictionary
- */
-function dictionaryImprovement (dict) {
-    for (let word in dict) {
-        if (dict[word][0] instanceof Array) {  // there were multiple pronunciations
-        } else {  // only one pronunciation
-            if (word === 'LURE') {
-                dict[word] = ['L', 'UR1']
-            }
-        }
-    }
 }
 
 
