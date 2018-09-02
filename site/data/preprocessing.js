@@ -31,6 +31,8 @@ async function process () {
     let dictFile = document.getElementById('cmudict').files[0]
     const rawString = await readFile(dictFile)
     let dict = parse(rawString)
+    dictionaryImprovement(dict)
+    // dict = minimize(dict)
     console.log(dict)
     // save('dictionary.json', JSON.stringify(dict))
 }
@@ -83,8 +85,7 @@ function parse (rawString) {
             dict[word] = convert(pronun)
         }
     }
-    dictionaryImprovement(dict)
-    return minimize(dict)
+    return dict
 }
 
 
@@ -93,22 +94,21 @@ function parse (rawString) {
  */
 function minimize (dict) {
     let minimizedDict = {}
+    let mapping = function (pronun) {
+        let out = ''
+        for (const symbol of pronun) {
+            out += ASCIICOMPRESSION[symbol]
+        }
+        return out
+    }
     for (let word in dict) {
         if (dict[word][0] instanceof Array) {  // there were multiple pronunciations
             minimizedDict[word] = []
             for (const pronun of dict[word]) {
-                let out = ''
-                for (const symbol of pronun) {
-                    out += ARPABET_ONE_LETTER[symbol.substr(0, 2)] + symbol.substr(2, 1)
-                }
-                minimizedDict[word].push(out)
+                minimizedDict[word].push(mapping(pronun))
             }
         } else {
-            let out = ''
-            for (const symbol of dict[word]) {
-                out += ARPABET_ONE_LETTER[symbol.substr(0, 2)] + symbol.substr(2, 1)
-            }
-            minimizedDict[word] = out
+            minimizedDict[word] = mapping(dict[word])
         }
     }
     return minimizedDict
