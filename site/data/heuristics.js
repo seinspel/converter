@@ -96,6 +96,7 @@ function maybeDiscardVariants (pronunList) {
                     scoreForSwitching--
                     break
                 }
+                // TODO: prefer other weak vowels over AH0
             }
             if (scoreForSwitching > 0) {
                 // this pronunciation is better -> replace the old one
