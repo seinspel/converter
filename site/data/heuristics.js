@@ -5,7 +5,9 @@
  */
 function dictionaryImprovement (dict) {
     let pronunciationFixes = function (word, pronun) {
-        return maybeInsertApostrophe(word, pronun)
+        let fixedPronun = maybeInsertApostrophe(word, pronun)
+        fixedPronun = fixUnstressedVowels(word, fixedPronun)
+        return fixedPronun
     }
     for (let word in dict) {
         if (dict[word][0] instanceof Array) {  // there were multiple pronunciations
@@ -38,6 +40,7 @@ function dictionaryImprovement (dict) {
 function maybeDiscardVariants (pronunList) {
     let currentBests = [pronunList[0]]
     // loop over the pronunciations to compare them with the current bests
+    // start with i=1 because we already added the one for i=0 to `currentBests`
     for (let i = 1; i < pronunList.length; i++) {
         let addToBests = false
         const candidate = pronunList[i]
@@ -45,10 +48,9 @@ function maybeDiscardVariants (pronunList) {
         for (let j = 0; j < currentBests.length; j++) {
             const currentBest = currentBests[j]
             const diffs = getDifferences(currentBest, candidate)
-            // console.log(i)
-            // console.log(j)
-            // console.log(diffs)
-            if (diffs.length > 3) {
+            // number of differences that we are expected because of length differences
+            const differencesFromLength = Math.abs(currentBest.length - candidate.length)
+            if ((diffs.length - differencesFromLength) > 2) {
                 // too many differences; the pronunciations are not comparable
                 addToBests = true
                 continue
@@ -60,54 +62,43 @@ function maybeDiscardVariants (pronunList) {
                 let [currentSymbol, newSymbol] = diff
                 switch (`${currentSymbol} -> ${newSymbol}`) {
                 case 'EH0 -> IH0':
-                    scoreForSwitching++
-                    break
-                case 'IH0 -> EH0':
-                    scoreForSwitching--
-                    break
                 case 'AH0 -> IH0':
-                    scoreForSwitching++
-                    break
-                case 'IH0 -> AH0':
-                    scoreForSwitching--
-                    break
+                case 'AH0 -> AE0':
                 case 'L -> EL':
-                    scoreForSwitching++
-                    break
-                case 'EL -> L':
-                    scoreForSwitching--
-                    break
                 case 'N -> EN':
-                    scoreForSwitching++
-                    break
-                case 'EN -> N':
-                    scoreForSwitching--
-                    break
                 case 'M -> EM':
-                    scoreForSwitching++
-                    break
-                case 'EM -> M':
-                    scoreForSwitching--
-                    break
                 case 'UH1 -> UW1':
                     scoreForSwitching++
-                    break
+                    continue
+                case 'IH0 -> EH0':
+                case 'IH0 -> AH0':
+                case 'AE0 -> AH0':
+                case 'EL -> L':
+                case 'EN -> N':
+                case 'EM -> M':
                 case 'UW1 -> UH1':
                     scoreForSwitching--
-                    break
+                    continue
                 }
-                // TODO: prefer other weak vowels over AH0
+                // prefer AH0 over other weak vowels
+                if (currentSymbol === 'AH0' && newSymbol[2] === '0') {
+                    scoreForSwitching--
+                } else if (currentSymbol[2] === '0' && newSymbol === 'AH0') {
+                    scoreForSwitching++
+                }
             }
             if (scoreForSwitching > 0) {
                 // this pronunciation is better -> replace the old one
                 currentBests[j] = candidate
                 addToBests = false  // no need to add it
+                break  // we can stop comparing this candidate
             } else if (scoreForSwitching === 0) {
                 // there equally good -> include both
                 addToBests = true
             } else {
-                // score was less than current
+                // score was less than current, we already have something better than this
                 addToBests = false
+                break  // we can stop comparing this candidate
             }
         }
         if (addToBests) {
@@ -132,7 +123,19 @@ function getDifferences (pronun1, pronun2) {
 }
 
 
-function avoidingUnstressedE (word, pronun) {
+/**
+ * Fix inconsistencies with AA0, AH0, EH0, IH0
+ */
+function fixUnstressedVowels (word, pronun) {
+    // words that start with EN- should always have IH0 at the beginning
+    if (word.slice(0, 2) === 'EN' && (pronun[0] === 'EH0' || pronun[0] === 'EH2')) {
+        pronun[0] = 'IH0'
+    }
+    const AaOccurence = pronun.indexOf('AA0')
+    if (AaOccurence > -1) {
+        pronun[AaOccurence] = 'AH0'
+    }
+    return pronun
 }
 
 
