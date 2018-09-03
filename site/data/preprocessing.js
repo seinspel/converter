@@ -32,9 +32,9 @@ async function process () {
     const rawString = await readFile(dictFile)
     let dict = parse(rawString)
     dictionaryImprovement(dict)
-    // dict = minimize(dict)
-    console.log(dict)
-    // save('dictionary.json', JSON.stringify(dict))
+    dict = minimize(dict)
+    // console.log(dict)
+    save('dictionary.json', JSON.stringify(dict))
 }
 
 
@@ -163,11 +163,9 @@ function countVowels(phons) {
 function convert (pronun) {
     let out = []
     const symbols = pronun.split(' ')
-    const numSyllables = countVowels(symbols)
     for (let i = 0; i < symbols.length; i++) {
         const symbol = symbols[i]
         const symbol_nos = symbol.substr(0, 2)
-        const behind = symbols[i-1]
         const ahead1 = symbols[i+1]
         const ahead2 = symbols[i+2]
         const stress = symbol.substr(2, 1)
@@ -189,22 +187,21 @@ function convert (pronun) {
             }
             break
         case 'AH':
-            if (stress === '0' && numSyllables >= 2) {
-                if (!nextIntervocalic && behind !== 'L') {
-                    switch (ahead1) {
-                    case 'N':
-                        out.push('EN')
-                        i++
-                        continue
-                    case 'L':
-                        out.push('EL')
-                        i++
-                        continue
-                    case 'M':
-                        out.push('EM')
-                        i++
-                        continue
-                    }
+            // syllablic consonants
+            if (stress === '0' && !nextIntervocalic) {
+                switch (ahead1) {
+                case 'L':
+                    out.push('EL')
+                    i++
+                    continue
+                case 'M':
+                    out.push('EM')
+                    i++
+                    continue
+                case 'N':
+                    out.push('EN')
+                    i++
+                    continue
                 }
             }
             break

@@ -20,21 +20,11 @@ function loadDict() {
 }
 
 function lookup(word) {
-    const letters = dict[word.toUpperCase()]
-    let versions = [letters]
-    const alt1 = dict[(word + '_1').toUpperCase()]
-    if (alt1) {
-        versions.push(alt1)
-        const alt2 = dict[(word + '_2').toUpperCase()]
-        if (alt2) {
-            versions.push(alt2)
-            const alt3 = dict[(word + '_3').toUpperCase()]
-            if (alt3) {
-                versions.push(alt3)
-            }
-        }
+    const result = dict[word.toUpperCase()]
+    if (result instanceof Array) {
+        return result
     }
-    return versions
+    return [result]
 }
 
 function decodePhonemes(letters) {
@@ -42,57 +32,8 @@ function decodePhonemes(letters) {
         return
     }
     let phons = []
-    for (let i = 0; i < letters.length; i++) {
-        switch (letters[i]) {
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'Q':
-        case 'F':
-        case 'G':
-        case 'J':
-        case 'K':
-        case 'L':
-        case 'M':
-        case 'P':
-        case 'R':
-        case 'S':
-        case 'X':
-        case 'V':
-        case 'W':
-        case 'Y':
-            phons.push(letters[i])
-            break
-        case 'A':
-        case 'E':
-        case 'I':
-        case 'O':
-        case 'U':
-            if (letters[i + 2] === '1' || letters[i + 2] === '2') {
-                phons.push(letters.slice(i, i + 3))
-                i += 2
-            } else {
-                phons.push(letters.slice(i, i + 2))
-                i++
-            }
-            break
-        case 'H':
-        case 'N':
-            phons.push(letters.slice(i, i + 2))
-            i++
-            break
-        case 'T':
-        case 'Z':
-            if (letters[i + 1] === 'H' && (letters[i + 2] !== 'H' || letters[i + 3] === 'H')) {
-                phons.push(letters.slice(i, i + 2))
-                i++
-            } else {
-                phons.push(letters[i])
-            }
-            break
-        default:
-            console.log('parsing error on this symbol: ' + letters[i])
-        }
+    for (const letter of letters) {
+        phons.push(ASCIIDECOMPRESSION[letter])
     }
     return phons
 }
@@ -100,8 +41,7 @@ function decodePhonemes(letters) {
 function process() {
     const text = document.getElementById('input').value
     const with_stress = document.getElementById('withStress').checked
-    const cutspell = document.getElementById('cutspell').checked
-    const result = convertText(text, with_stress, cutspell)
+    const result = convertText(text, with_stress)
     let output = document.getElementById('output')
     output.value = result
 }
@@ -113,7 +53,7 @@ evacuate boyhood adhere bloodshed midyear knowing away short awestruck withhold
 adulthood malevolent criminal fewer lure neurology careless what's think`
 }
 
-function convertText(text, with_stress, cutspell) {
+function convertText(text, with_stress) {
     const chunks = text.split(/([^a-zA-Z'-])/)
     console.log(chunks)
     let result = ''
@@ -131,7 +71,7 @@ function convertText(text, with_stress, cutspell) {
                 }
                 continue
             }
-            converted.push(parse(phons, with_stress, cutspell))
+            converted.push(parse(phons, with_stress))
         }
         if (converted.length === 1) {
             result += converted[0]

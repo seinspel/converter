@@ -44,6 +44,9 @@ function maybeDiscardVariants (pronunList) {
     for (let i = 1; i < pronunList.length; i++) {
         let addToBests = false
         const candidate = pronunList[i]
+        if (variantHasMajorProblems(candidate)) {
+            continue  // abort the comparison right here
+        }
         // for each candidate, loop over the current bests and compare
         for (let j = 0; j < currentBests.length; j++) {
             const currentBest = currentBests[j]
@@ -106,6 +109,17 @@ function maybeDiscardVariants (pronunList) {
         }
     }
     return currentBests
+}
+
+
+/**
+ * Identify major problems in a pronunciation
+ */
+function variantHasMajorProblems (pronun) {
+    if (pronun[0] == 'HH' && pronun[1] == 'W') {
+        return true
+    }
+    return false
 }
 
 
