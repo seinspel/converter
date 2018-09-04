@@ -86,6 +86,8 @@ function parse (rawString) {
       const versionWord = versionMatches[1]
       const versionNum = versionMatches[2]
 
+      // TODO: check if there are duplicate pronunciations
+      // (could happen because of, for example, cot-caught merger)
       // console.log(`${versionMatches[1]} and ${versionMatches[2]}`)
       if (versionNum === '1') {
         const existingPronun = dict[versionWord]
