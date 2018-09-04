@@ -115,6 +115,7 @@ function maybeDiscardVariants (pronunList) {
  * Identify major problems in a pronunciation
  */
 function variantHasMajorProblems (pronun) {
+  // TODO: avoid R after AW and AY (should be YR instead)
   if (pronun[0] === 'HH' && pronun[1] === 'W') {
     return true
   }
