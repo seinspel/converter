@@ -1,9 +1,21 @@
 'use strict'
 
+var overrides = {}
+
 function prepare () {
   // set handler for 'process' button
   let clickButton = document.getElementById('process')
   clickButton.addEventListener('click', process, false)
+
+  // download overrides
+  let oReq = new XMLHttpRequest()
+  oReq.addEventListener('load', loadOverrides)
+  oReq.open('GET', '/data/overrides.json')
+  oReq.send()
+}
+
+function loadOverrides () {
+  overrides = JSON.parse(this.responseText)
 }
 
 /**
@@ -30,6 +42,8 @@ async function process () {
   const rawString = await readFile(dictFile)
   let dict = parse(rawString)
   dictionaryImprovement(dict)
+  // apply overrides
+  dict = Object.assign({}, dict, overrides)
   dict = minimize(dict)
   // console.log(dict)
   save('dictionary.json', JSON.stringify(dict))
