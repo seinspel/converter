@@ -50,9 +50,9 @@ function maybeDiscardVariants (pronunList) {
     for (let j = 0; j < currentBests.length; j++) {
       const currentBest = currentBests[j]
       const diffs = getDifferences(currentBest, candidate)
-      // number of differences that we are expected because of length differences
-      const differencesFromLength = Math.abs(currentBest.length - candidate.length)
-      if ((diffs.length - differencesFromLength) > 2) {
+      // number of differences that are expected because of length differences
+      const diffsFromLength = Math.abs(currentBest.length - candidate.length)
+      if ((diffs.length - diffsFromLength) > 2) {
         // too many differences; the pronunciations are not comparable
         addToBests = true
         continue
@@ -98,7 +98,8 @@ function maybeDiscardVariants (pronunList) {
         // there equally good -> include both
         addToBests = true
       } else {
-        // score was less than current, we already have something better than this
+        // score was less than current
+        // we already have something better than this
         addToBests = false
         break // we can stop comparing this candidate
       }
@@ -138,9 +139,11 @@ function getDifferences (pronun1, pronun2) {
  */
 function fixUnstressedVowels (word, pronun) {
   // words that start with EN- should always have IH0 at the beginning
-  if (word.slice(0, 2) === 'EN' && (pronun[0] === 'EH0' || pronun[0] === 'EH2')) {
+  if (word.slice(0, 2) === 'EN' &&
+        (pronun[0] === 'EH0' || pronun[0] === 'EH2')) {
     pronun[0] = 'IH0'
   }
+  // AA0 doesn't exist
   const AaOccurence = pronun.indexOf('AA0')
   if (AaOccurence > -1) {
     pronun[AaOccurence] = 'AH0'
@@ -153,38 +156,39 @@ function fixUnstressedVowels (word, pronun) {
  * from a contraction.
  */
 function maybeInsertApostrophe (word, pronun) {
-  if (!word.includes("'")) {
+  if (!word.includes('\'')) {
     return pronun // skip all the tests
   }
-  if (word === "I'M") {
-    return pronun.slice(0, -1).concat(["'"], pronun.slice(-1))
+  if (word === 'I\'M') {
+    return pronun.slice(0, -1).concat(['\''], pronun.slice(-1))
   }
   switch (word.slice(-2)) { // 2-character ending
-    case "S'":
+    case 'S\'':
       // add apostrophe at the end
-      pronun.push("'")
+      pronun.push('\'')
       return pronun
-    case "'D": // problem cases: it'd, that'd, what'd
+    case '\'D': // problem cases: it'd, that'd, what'd
       if (word.slice(-3)[0] === 'T') {
-        return pronun.slice(0, -2).concat(["'"], pronun.slice(-2))
+        return pronun.slice(0, -2).concat(['\''], pronun.slice(-2))
       } // otherwise fall through
-    case "'S":
-    case "'T":
+    case '\'S':
+    case '\'T':
       // insert apostrophe next to last
-      return pronun.slice(0, -1).concat(["'"], pronun.slice(-1))
+      return pronun.slice(0, -1).concat(['\''], pronun.slice(-1))
   }
   switch (word.slice(-3)) { // 3-character ending
-    case "'VE":
-      // problem cases: could've, might've, must've, should've, that've, what've, would've
+    case '\'VE':
+      // problem cases:
+      // could've, might've, must've, should've, that've, what've, would've
       if (word.slice(-4)[0] === 'T' || word.slice(-4)[0] === 'D') {
-        return pronun.slice(0, -2).concat(["'"], pronun.slice(-2))
+        return pronun.slice(0, -2).concat(['\''], pronun.slice(-2))
       } // otherwise fall through
-    case "'RE":
-    case "'LL":
+    case '\'RE':
+    case '\'LL':
       // R and L have a syllabic form, so we don't need
       // to care about the preceding sound.
       // insert apostrophe next to last
-      return pronun.slice(0, -1).concat(["'"], pronun.slice(-1))
+      return pronun.slice(0, -1).concat(['\''], pronun.slice(-1))
   }
   return pronun
 }

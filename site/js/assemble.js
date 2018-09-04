@@ -1,14 +1,15 @@
 'use strict'
 
-const vowels = ['AA', 'AE', 'AH', 'AR', 'AW', 'AY', 'EH', 'EL', 'EM', 'EN', 'ER', 'EY', 'IH',
-  'II', 'IR', 'IY', 'OR', 'OW', 'OY', 'UH', 'UR', 'UW', 'YR']
-// these consonants cannot be pronounced immediately before an L (counterexample: R (curl))
-const unambiguousBeforeL = ['B', 'CH', 'D', 'DH', 'F', 'G', 'JH', 'K', 'M',
-  'N', 'P', 'S', 'SH', 'T', 'TH', 'V', 'Z', 'ZH']
-const unambiguousBeforeM = ['B', 'CH', 'D', 'DH', 'F', 'G', 'JH', 'K', 'P',
-  'S', 'SH', 'T', 'TH', 'V', 'Z', 'ZH']
-const unambiguousBeforeN = ['B', 'CH', 'D', 'DH', 'F', 'G', 'JH', 'K', 'P',
-  'S', 'SH', 'T', 'TH', 'V', 'Z', 'ZH']
+const vowels = ['AA', 'AE', 'AH', 'AR', 'AW', 'AY', 'EH', 'EL', 'EM', 'EN',
+  'ER', 'EY', 'IH', 'II', 'IR', 'IY', 'OR', 'OW', 'OY', 'UH', 'UR', 'UW', 'YR']
+// these consonants cannot be pronounced immediately before an L
+// (counterexample: R (curl))
+const unambiguousBeforeL = ['B', 'CH', 'D', 'DH', 'F', 'G', 'JH', 'K', 'P', 'S',
+  'SH', 'T', 'TH', 'V', 'Z', 'ZH']
+const unambiguousBeforeM = ['B', 'CH', 'D', 'DH', 'F', 'G', 'JH', 'K', 'P', 'S',
+  'SH', 'T', 'TH', 'V', 'Z', 'ZH']
+const unambiguousBeforeN = ['B', 'CH', 'D', 'DH', 'F', 'G', 'JH', 'K', 'P', 'S',
+  'SH', 'T', 'TH', 'V', 'Z', 'ZH']
 const unambiguousBeforeR = ['B', 'CH', 'D', 'DH', 'F', 'G', 'JH', 'K', 'L', 'M',
   'N', 'NG', 'P', 'S', 'SH', 'T', 'TH', 'V', 'Z', 'ZH']
 
@@ -38,7 +39,8 @@ function countVowels (phons) {
 /**
  * Convert a pronunciation symbol into letters for the spelling
  */
-function convertSymbol (symbol, behind, ahead1, ahead2, numSyllables, withStress) {
+function convertSymbol (symbol, behind, ahead1, ahead2, numSyllables,
+  withStress) {
   const hasPrimary = (symbol.substr(2, 1) === '1')
   const hasSecondary = (symbol.slice(-1) === '2')
   const symbolNoS = symbol.substr(0, 2)

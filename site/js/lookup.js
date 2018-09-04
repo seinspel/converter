@@ -53,6 +53,9 @@ evacuate boyhood adhere bloodshed midyear knowing away short awestruck withhold
 adulthood malevolent criminal fewer lure neurology careless what's think`
 }
 
+/**
+ * Convert a text in normal English to new English
+ */
 function convertText (text, withStress) {
   const chunks = text.split(/([^a-zA-Z'-])/)
   console.log(chunks)

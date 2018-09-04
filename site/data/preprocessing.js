@@ -131,8 +131,8 @@ function save (filename, data) {
   }
 }
 
-const vowels = ['AA', 'AE', 'AH', 'AO', 'AW', 'AY', 'EH', 'ER', 'EY', 'IH', 'IY', 'OW', 'OY', 'UH',
-  'UW']
+const vowels = ['AA', 'AE', 'AH', 'AO', 'AW', 'AY', 'EH', 'ER', 'EY', 'IH',
+  'IY', 'OW', 'OY', 'UH', 'UW']
 
 /**
  * Returns the number of vowels in the given pronunciation
@@ -215,10 +215,6 @@ function convert (pronun) {
         }
         break
       case 'ER':
-        // if (!hasPrimary && numSyllables >=2 && (countVowels([ahead1]) === 0)) {
-        //     out.push('R')
-        //     continue
-        // }
         out.push('YR' + stress)
         continue
       case 'EY':
