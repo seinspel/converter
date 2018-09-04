@@ -46,11 +46,16 @@ function process () {
   output.value = result
 }
 
-function tests () {
-  let inputField = document.getElementById('input')
-  inputField.value = `foreskin seeing dying saying behalf suing teriyaki
-evacuate boyhood adhere bloodshed midyear knowing away short awestruck withhold
-adulthood malevolent criminal fewer lure neurology careless what's think`
+function figureOutCapitalization (original, converted) {
+  if (original.toUpperCase() === original) {
+    // all caps
+    return converted.toUpperCase()
+  } else if (original[0].toUpperCase() === original[0]) {
+    // only first letter is upper case
+    // (or more precisely: not all letters are upper case but the first one is)
+    return converted[0].toUpperCase() + converted.slice(1)
+  }
+  return converted
 }
 
 /**
@@ -62,25 +67,35 @@ function convertText (text, withStress) {
   let result = ''
   for (let chunk of chunks) {
     const lookupResults = lookup(chunk)
-    let converted = []
-    for (let letters of lookupResults) {
-      const phons = decodePhonemes(letters)
+    let allConverted = []
+    for (const variant of lookupResults) {
+      const phons = decodePhonemes(variant)
       if (!phons) {
         if (/[a-zA-Z]/.test(chunk)) {
           // chunk is a real word but it's not in the dictionary
-          converted.push(`???${chunk}???`)
+          allConverted.push(`???${chunk}???`)
         } else {
-          converted.push(chunk)
+          // chunk is a special character; probably a comma or so
+          allConverted.push(chunk)
         }
         continue
       }
-      converted.push(assemble(phons, withStress))
+      const converted = assemble(phons, withStress)
+      allConverted.push(figureOutCapitalization(chunk, converted))
     }
-    if (converted.length === 1) {
-      result += converted[0]
+    if (allConverted.length === 1) {
+      result += allConverted[0]
     } else {
-      result += `(${converted.join('/')})`
+      result += `(${allConverted.join('/')})`
     }
   }
   return result
+}
+
+function tests () {
+  let inputField = document.getElementById('input')
+  inputField.value = `Foreskin SEEING dying saying behalf suing teriyaki
+evacuate boyhood adhere bloodshed midyear knowing away short awestruck withhold
+adulthood malevolent criminal fewer lure neurology careless what's think
+nighttime`
 }
