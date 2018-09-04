@@ -20,8 +20,20 @@ function assemble (phons, withStress) {
   let result = ''
   const numSyllables = countVowels(phons)
   for (let i = 0; i < phons.length; i++) {
-    result += convertSymbol(phons[i], phons[i - 1], phons[i + 1], phons[i + 2], numSyllables,
-      withStress)
+    const newLetters = convertSymbol(phons[i], phons[i - 1], phons[i + 1],
+      phons[i + 2], numSyllables, withStress)
+
+    // avoid ambiguities by inserting apostrophes when two times the same vowel
+    // appears accross phoneme boundaries or when the combinations
+    // c+h or s+h appear
+    const lastOld = result.slice(-1)[0]
+    const firstNew = newLetters[0]
+    if (('aeiouáéíóú'.includes(lastOld) && lastOld === firstNew) ||
+          ((lastOld === 'c' || lastOld === 's') && firstNew === 'h')) {
+      result += '\''
+    }
+
+    result += newLetters
   }
   return result
 }
@@ -51,14 +63,8 @@ function convertSymbol (symbol, behind, ahead1, ahead2, numSyllables,
   switch (symbolNoS) {
     // vowels
     case 'AA':
-      if (ahead1NoS === 'AA' || ahead1NoS === 'AE') {
-        return lexicalSets.LOT[stress] + '\''
-      }
       return lexicalSets.LOT[stress]
     case 'AE':
-      if (ahead1NoS === 'AA' || ahead1NoS === 'AE') {
-        return lexicalSets.TRAP[stress] + '\''
-      }
       return lexicalSets.TRAP[stress]
     case 'AH':
       if (!hasPrimary && !hasSecondary) {
@@ -68,65 +74,34 @@ function convertSymbol (symbol, behind, ahead1, ahead2, numSyllables,
     case 'AR':
       return lexicalSets.START[stress]
     case 'AW':
-      if (ahead1NoS === 'UH' || ahead1NoS === 'UW' ||
-            ahead1NoS === 'YR' || ahead1NoS === 'UR') {
-        return lexicalSets.MOUTH[stress] + '\''
-      }
       return lexicalSets.MOUTH[stress]
     case 'AY':
-      if (ahead1NoS === 'IH' || ahead1NoS === 'IY') {
-        return lexicalSets.PRICE[stress] + '\''
-      }
       return lexicalSets.PRICE[stress]
     case 'EH':
       return lexicalSets.DRESS[stress]
     case 'ER':
       return lexicalSets.SQUARE[stress]
     case 'EY':
-      if (ahead1NoS === 'IH' || ahead1NoS === 'IY') {
-        return lexicalSets.FACE[stress] + '\''
-      }
       return lexicalSets.FACE[stress]
     case 'IH':
-      if (ahead1NoS === 'IH' || ahead1NoS === 'IY') {
-        return lexicalSets.KIT[stress] + '\''
-      }
       return lexicalSets.KIT[stress]
     case 'II':
       return lexicalSets.happY
     case 'IR':
       return lexicalSets.NEAR[stress]
     case 'IY':
-      if (ahead1NoS === 'IH' || ahead1NoS === 'IY') {
-        return lexicalSets.FLEECE[stress] + '\''
-      }
       return lexicalSets.FLEECE[stress]
     case 'OR':
       return lexicalSets.FORCE[stress]
     case 'OW':
-      if (ahead1NoS === 'UH' || ahead1NoS === 'UW' ||
-            ahead1NoS === 'YR' || ahead1NoS === 'UR') {
-        return lexicalSets.GOAT[stress] + '\''
-      }
       return lexicalSets.GOAT[stress]
     case 'OY':
-      if (ahead1NoS === 'IH' || ahead1NoS === 'IY') {
-        return lexicalSets.CHOICE[stress] + '\''
-      }
       return lexicalSets.CHOICE[stress]
     case 'UH':
-      if (ahead1NoS === 'UH' || ahead1NoS === 'UW' ||
-            ahead1NoS === 'YR' || ahead1NoS === 'UR') {
-        return lexicalSets.FOOT[stress] + '\''
-      }
       return lexicalSets.FOOT[stress]
     case 'UR':
       return lexicalSets.LURE[stress]
     case 'UW':
-      if (ahead1NoS === 'UH' || ahead1NoS === 'UW' ||
-            ahead1NoS === 'YR' || ahead1NoS === 'UR') {
-        return lexicalSets.GOOSE[stress] + '\''
-      }
       return lexicalSets.GOOSE[stress]
     case 'YR':
       if (!hasPrimary && !hasSecondary) {
@@ -157,12 +132,7 @@ function convertSymbol (symbol, behind, ahead1, ahead2, numSyllables,
       if (ahead1 === 'G' || ahead1 === 'K') {
         return consonants.N
       }
-      return consonants[symbolNoS]
-    case 'TH':
-      if (ahead1 === 'HH') {
-        return consonants.TH + '\''
-      }
-      return consonants.TH
+      return consonants.NG
     case 'B':
     case 'CH':
     case 'D':
@@ -180,6 +150,7 @@ function convertSymbol (symbol, behind, ahead1, ahead2, numSyllables,
     case 'S':
     case 'SH':
     case 'T':
+    case 'TH':
     case 'V':
     case 'W':
     case 'Y':
