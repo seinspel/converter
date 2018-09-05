@@ -115,6 +115,8 @@ function maybeDiscardVariants (pronunList) {
  * Identify major problems in a pronunciation
  */
 function variantHasMajorProblems (pronun) {
+  // TODO: I should probably remove this whole function and put
+  //       the functionality into `preprocessing.js` instead
   if (pronun[0] === 'HH' && pronun[1] === 'W') {
     return true
   }
