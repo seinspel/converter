@@ -278,6 +278,8 @@ function convert (pronun) {
           continue
         }
         break
+      // TODO: handle `case 'R':` to turn `AW R` and `AY R`
+      //       into `AW YR0` and `AY YR0`
       default:
         break
     }
