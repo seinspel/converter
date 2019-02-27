@@ -11,7 +11,7 @@ function prepare () {
   // download dictionary
   let oReq = new XMLHttpRequest()
   oReq.addEventListener('load', loadDict)
-  oReq.open('GET', '/data/dictionary.json')
+  oReq.open('GET', './data/dictionary.json')
   oReq.send()
 }
 
