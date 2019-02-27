@@ -117,6 +117,8 @@ function maybeDiscardVariants (pronunList) {
 function variantHasMajorProblems (pronun) {
   // TODO: I should probably remove this whole function and put
   //       the functionality into `preprocessing.js` instead
+
+  // this check will become obsolete when we switch to amepd
   if (pronun[0] === 'HH' && pronun[1] === 'W') {
     return true
   }
