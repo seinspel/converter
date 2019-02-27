@@ -95,7 +95,7 @@ function maybeDiscardVariants (pronunList) {
         addToBests = false // no need to add it
         break // we can stop comparing this candidate
       } else if (scoreForSwitching === 0) {
-        // there equally good -> include both
+        // they're equally good -> include both
         addToBests = true
       } else {
         // score was less than current
