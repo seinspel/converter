@@ -37,6 +37,12 @@ function readFile (file) {
   })
 }
 
+/**
+ * The main function
+ *
+ * First read the cmudict file then apply the preprocessing
+ * and finally give the processed file as a download.
+ */
 async function process () {
   let dictFile = document.getElementById('cmudict').files[0]
   const rawString = await readFile(dictFile)
@@ -66,13 +72,21 @@ function parse (rawString) {
   ]
 
   for (const line of lines) {
+    // exclude explanations
     if (line.startsWith(';;;') || !line.match(/^[A-Z']/)) {
       console.log(`excluded: "${line}"`)
       continue
     }
+    // split between word and pronunciation
     const split = line.split('  ')
     let word = split[0]
     let pronun = split[1]
+    const commentStart = pronun.indexOf('#@@')
+    if (commentStart !== -1) {
+      // there is an additional comment for this pronunciation
+      console.log(`removed comment in "${pronun}"`)
+      pronun = pronun.slice(0, commentStart - 1)
+    }
     if (word.startsWith('\'')) {
       if (!allowedApostrophes.includes(word)) {
         console.log(`excluded: "${line}"`)
@@ -80,23 +94,41 @@ function parse (rawString) {
       }
       pronun = '\' ' + pronun
     }
+    // convert into our own format
+    pronun = convert(pronun)
     // TODO: split entries that contain a space into two entries
-    const versionMatches = word.match(/^([^(]+)\((.)\)/i)
+    const versionMatches = word.match(/^([^(]+)\(([^)]+)\)/i)
     if (versionMatches) {
       const versionWord = versionMatches[1]
-      const versionNum = versionMatches[2]
+      // const versionNum = versionMatches[2]
+      // const firstNumber = cmuMode ? '1' : '2'
 
-      // TODO: check if there are duplicate pronunciations
-      // (could happen because of, for example, cot-caught merger)
       // console.log(`${versionMatches[1]} and ${versionMatches[2]}`)
-      if (versionNum === '1') {
-        const existingPronun = dict[versionWord]
-        dict[versionWord] = [existingPronun, convert(pronun)]
+      const existingEntry = dict[versionWord]
+      if (existingEntry && existingEntry[0] instanceof Array) {
+        // there are already other entries -> just add the current one
+        if (existingEntry.some(e => JSON.stringify(e) === JSON.stringify(pronun))) {
+          console.log(`skip duplicate pronunciation: "${pronun}"`)
+          continue
+        }
+        console.log(`adding new pronunciation for "${versionWord}": "${pronun}"`)
+        dict[versionWord].push(pronun)
       } else {
-        dict[versionWord].push(convert(pronun))
+        // if (versionNum === firstNumber) {
+        // turn the entry into an array
+        if (JSON.stringify(pronun) === JSON.stringify(existingEntry)) {
+          console.log(`skip duplicate pronunciation: "${pronun}"`)
+          continue
+        }
+        if (existingEntry === undefined) {
+          dict[versionWord] = pronun
+          console.log(`there was no existing pronunciation for "${versionWord}"`)
+        } else {
+          dict[versionWord] = [existingEntry, pronun]
+        }
       }
     } else {
-      dict[word] = convert(pronun)
+      dict[word] = pronun
     }
   }
   return dict
@@ -110,7 +142,11 @@ function minimize (dict) {
   let mapping = function (pronun) {
     let out = ''
     for (const symbol of pronun) {
-      out += ASCIICOMPRESSION[symbol]
+      const asciiSymbol = ASCIICOMPRESSION[symbol]
+      if (asciiSymbol === undefined) {
+        console.log(`undefined ascii symbol for "${symbol}"`)
+      }
+      out += asciiSymbol
     }
     return out
   }
@@ -156,7 +192,9 @@ const vowels = ['AA', 'AE', 'AH', 'AO', 'AW', 'AY', 'EH', 'ER', 'EY', 'IH',
 function countVowels (phons) {
   let numVowels = 0
   for (let phon of phons) {
-    if (phon && vowels.indexOf(phon.substr(0, 2)) !== -1) {
+    if (phon && vowels.includes(phon.slice(0, -1))) {
+      numVowels++
+    } else if (phon && (phon === 'AX' || phon === 'AXR')){
       numVowels++
     }
   }
@@ -175,10 +213,11 @@ function convert (pronun) {
   const symbols = pronun.split(' ')
   for (let i = 0; i < symbols.length; i++) {
     const symbol = symbols[i]
-    const symbolNoS = symbol.substr(0, 2)
+    const hasStress = vowels.includes(symbol.slice(0, -1))
+    const symbolNoS = hasStress ? symbol.slice(0, -1) : symbol
+    const stress = hasStress ? symbol.slice(-1) : ''
     const ahead1 = symbols[i + 1]
     const ahead2 = symbols[i + 2]
-    const stress = symbol.substr(2, 1)
     // whether or not the next phoneme is intervocalic
     const nextIntervocalic = (countVowels([ahead2]) !== 0)
     switch (symbolNoS) {
@@ -196,9 +235,17 @@ function convert (pronun) {
           continue
         }
         break
-      case 'AH':
-        // syllablic consonants
-        if (stress === '0' && !nextIntervocalic) {
+      case 'AO':
+        if (ahead1 === 'R') {
+          out.push('OR' + stress)
+          i++ // skip the next symbol
+          continue
+        }
+        out.push('AA' + stress)
+        continue
+      case 'AX':
+        if (!nextIntervocalic) {
+          // syllablic consonants
           switch (ahead1) {
             case 'L':
               out.push('EL')
@@ -215,14 +262,6 @@ function convert (pronun) {
           }
         }
         break
-      case 'AO':
-        if (ahead1 === 'R') {
-          out.push('OR' + stress)
-          i++ // skip the next symbol
-          continue
-        }
-        out.push('AA' + stress)
-        continue
       case 'EH':
         if (ahead1 === 'R') {
           out.push('ER' + stress)

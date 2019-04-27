@@ -86,5 +86,7 @@ const ASCIIDECOMPRESSION = {
   'y': 'YR2',
   'z': 'Z',
   '~': 'ZH',
-  '\'': '\''
+  '\'': '\'',
+  '{': 'AX',
+  '}': 'AXR'
 }

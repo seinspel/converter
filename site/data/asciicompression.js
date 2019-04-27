@@ -92,5 +92,7 @@ const ASCIICOMPRESSION = {
   'YR2': 'y',
   'Z': 'z',
   'ZH': '~',
-  '\'': '\'' // apostrophe remains apostrophe
+  '\'': '\'', // apostrophe remains apostrophe
+  'AX': '{',
+  'AXR': '}'
 }

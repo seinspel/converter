@@ -41,7 +41,9 @@ function assemble (phons, withStress) {
 function countVowels (phons) {
   let numVowels = 0
   for (let phon of phons) {
-    if (phon && vowels.indexOf(phon.substr(0, 2)) !== -1) {
+    if (phon && vowels.includes(phon.slice(0, -1))) {
+      numVowels++
+    } else if (phon && (phon === 'AX' || phon === 'AXR')){
       numVowels++
     }
   }
@@ -53,10 +55,11 @@ function countVowels (phons) {
  */
 function convertSymbol (symbol, behind, ahead1, ahead2, numSyllables,
   withStress) {
-  const hasPrimary = (symbol.substr(2, 1) === '1')
+  const hasPrimary = (symbol.slice(-1) === '1')
   const hasSecondary = (symbol.slice(-1) === '2')
-  const symbolNoS = symbol.substr(0, 2)
-  const ahead1NoS = ahead1 ? ahead1.substr(0, 2) : ''
+  const hasStressMarker = ['0', '1', '2'].includes(symbol.slice(-1))
+  const symbolNoS = hasStressMarker ? symbol.slice(0, -1) : symbol
+  // const ahead1NoS = ahead1 ? ahead1.substr(0, 2) : ''
   const stress = (withStress && hasPrimary && numSyllables >= 2) ? 0 : 1
   const lexicalSets = LEXICALSETS
   const consonants = CONSONANTS
@@ -67,14 +70,21 @@ function convertSymbol (symbol, behind, ahead1, ahead2, numSyllables,
     case 'AE':
       return lexicalSets.TRAP[stress]
     case 'AH':
-      if (!hasPrimary && !hasSecondary) {
-        return lexicalSets.commA
-      }
+      // if (!hasPrimary && !hasSecondary) {
+      //   return lexicalSets.commA
+      // }
       return lexicalSets.STRUT[stress]
     case 'AR':
       return lexicalSets.START[stress]
     case 'AW':
       return lexicalSets.MOUTH[stress]
+    case 'AX':
+      return lexicalSets.commA
+    case 'AXR':
+      if (!ahead1 && unambiguousBeforeR.includes(behind)) {
+        return consonants.R
+      }
+      return lexicalSets.lettER
     case 'AY':
       return lexicalSets.PRICE[stress]
     case 'EH':
@@ -104,15 +114,16 @@ function convertSymbol (symbol, behind, ahead1, ahead2, numSyllables,
     case 'UW':
       return lexicalSets.GOOSE[stress]
     case 'YR':
-      if (!hasPrimary && !hasSecondary) {
-        if (!ahead1 && unambiguousBeforeR.includes(behind)) {
-          return consonants.R
-        }
-        return lexicalSets.lettER
-      }
+      // if (!hasPrimary && !hasSecondary) {
+      //   if (!ahead1 && unambiguousBeforeR.includes(behind)) {
+      //     return consonants.R
+      //   }
+      //   return lexicalSets.lettER
+      // }
       return lexicalSets.NURSE[stress]
     // syllabic consonants
     case 'EL':
+      // TODO: check for apostrophes in the behind
       if (!ahead1 && unambiguousBeforeL.includes(behind)) {
         return consonants.L
       }
