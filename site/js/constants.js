@@ -7,7 +7,7 @@ const LEXICALSETS = {
   TRAP: ['á', 'a'],
   DRESS: ['é', 'e'],
   KIT: ['í', 'i'],
-  STRUT: ['ó', 'o'],
+  STRUT: ['ý', 'y'],
   FOOT: ['ú', 'u'],
   LOT: ['áa', 'aa'],
   FACE: ['éi', 'ei'],
@@ -30,7 +30,7 @@ const LEXICALSETS = {
 
 const CONSONANTS = {
   B: 'b',
-  CH: 'tx',
+  CH: 'tc',
   D: 'd',
   DH: 'q',
   F: 'f',
@@ -45,12 +45,12 @@ const CONSONANTS = {
   P: 'p',
   R: 'r',
   S: 's',
-  SH: 'x',
+  SH: 'c',
   T: 't',
-  TH: 'c',
+  TH: 'x',
   V: 'v',
   W: 'w',
-  Y: 'y',
+  Y: 'j',
   Z: 'z',
-  ZH: 'j'
+  ZH: 'jh'
 }

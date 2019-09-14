@@ -1,10 +1,15 @@
 {
+"A":["EY1"],
 "AND":["AE1","N","D"],
-"ASEXUAL":["EY0","S","EH1","K","SH","UW0","AH0","L"],
-"DURESS":["D","UH0","R","EH1","S"],
+"ASEXUAL":["EY0","S","EH1","K","SH","UW0","AX","L"],
+"BEFORE":["B","IH0","F","OR1"],
 "DUE":["D","Y","UW1"],
+"DURESS":["D","UH0","R","EH1","S"],
 "ENDURE":["IH0","N","D","YR1"],
+"FOR":["F","OR1"],
 "LURE":["L","UR1"],
 "OF":["AH1","V"],
-"THE":["DH","AH0"]
+"THE":["DH","AX"],
+"TO":["T","UW1"],
+"WAS":["W","AA1", "Z"]
 }
