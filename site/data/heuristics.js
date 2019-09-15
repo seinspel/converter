@@ -147,7 +147,7 @@ function fixUnstressedVowels (word, pronun) {
         (pronun[0] === 'EH0' || pronun[0] === 'EH2')) {
     pronun[0] = 'IH0'
   }
-  // AA0 doesn't exist
+  // AA0 doesn't exist (AA2 does exist though, e.g. "botox")
   const AaOccurence = pronun.indexOf('AA0')
   if (AaOccurence > -1) {
     pronun[AaOccurence] = 'AH0'
