@@ -73,6 +73,8 @@ function convertText (text, withStress) {
       if (!phons) {
         if (/[a-zA-Z]/.test(chunk)) {
           // chunk is a real word but it's not in the dictionary
+          // try to find a base form of the word
+          // TODO: find base form
           allConverted.push(`???${chunk}???`)
         } else {
           // chunk is a special character; probably a comma or so

@@ -1,6 +1,6 @@
 'use strict'
 
-const vowels = ['AA', 'AE', 'AH', 'AR', 'AW', 'AY', 'EH', 'EL', 'EM', 'EN',
+const vowels = ['AA', 'AE', 'AH', 'AO', 'AR', 'AW', 'AY', 'EH', 'EL', 'EM', 'EN',
   'ER', 'EY', 'IH', 'II', 'IR', 'IY', 'OR', 'OW', 'OY', 'UH', 'UR', 'UW', 'YR']
 // these consonants cannot be pronounced immediately before an L
 // (counterexample: R (curl))
@@ -28,7 +28,7 @@ function assemble (phons, withStress) {
     // c+h or s+h appear
     const lastOld = result.slice(-1)[0]
     const firstNew = newLetters[0]
-    if (('aeiouáéíóú'.includes(lastOld) && lastOld === firstNew) ||
+    if (('aeiouyáéíóúý'.includes(lastOld) && lastOld === firstNew) ||
           ((lastOld === 'c' || lastOld === 's') && firstNew === 'h')) {
       result += '\''
     }
@@ -74,6 +74,8 @@ function convertSymbol (symbol, behind, ahead1, ahead2, numSyllables,
       //   return lexicalSets.commA
       // }
       return lexicalSets.STRUT[stress]
+    case 'AO':
+      return lexicalSets.THOUGHT[stress]
     case 'AR':
       return lexicalSets.START[stress]
     case 'AW':

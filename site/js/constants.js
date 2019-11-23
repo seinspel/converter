@@ -14,6 +14,7 @@ const LEXICALSETS = {
   FLEECE: ['íi', 'ii'],
   GOAT: ['óu', 'ou'],
   GOOSE: ['úu', 'uu'],
+  THOUGHT: ['áa', 'aa'],
   PRICE: ['ái', 'ai'],
   MOUTH: ['áu', 'au'],
   CHOICE: ['ói', 'oi'],
