@@ -20,8 +20,10 @@ function assemble (phons, withStress) {
   let result = ''
   const numSyllables = countVowels(phons)
   for (let i = 0; i < phons.length; i++) {
-    const newLetters = convertSymbol(phons[i], phons[i - 1], phons[i + 1],
-      phons[i + 2], numSyllables, withStress)
+    // if the previous symbol is the apostrophe, then use the one before that
+    const behind = phons[i - 1] === '\'' ? phons[i - 2] : phons[i - 1]
+    const newLetters = convertSymbol(phons[i], behind, phons[i + 1],
+      numSyllables, withStress)
 
     // avoid ambiguities by inserting apostrophes when two times the same vowel
     // appears accross phoneme boundaries or when the combinations
@@ -53,8 +55,7 @@ function countVowels (phons) {
 /**
  * Convert a pronunciation symbol into letters for the spelling
  */
-function convertSymbol (symbol, behind, ahead1, ahead2, numSyllables,
-  withStress) {
+function convertSymbol (symbol, behind, ahead1, numSyllables, withStress) {
   const hasPrimary = (symbol.slice(-1) === '1')
   const hasSecondary = (symbol.slice(-1) === '2')
   const hasStressMarker = ['0', '1', '2'].includes(symbol.slice(-1))
@@ -125,7 +126,6 @@ function convertSymbol (symbol, behind, ahead1, ahead2, numSyllables,
       return lexicalSets.NURSE[stress]
     // syllabic consonants
     case 'EL':
-      // TODO: check for apostrophes in the behind
       if (!ahead1 && unambiguousBeforeL.includes(behind)) {
         return consonants.L
       }
