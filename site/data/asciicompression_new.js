@@ -5,7 +5,7 @@
  */
 const ASCIICOMPRESSION = {
   'AX': ' ',
-  'AXR': '!'
+  'AXR': '!',
   'AA0': '"',
   'AA1': '#',
   'AA2': '$',
@@ -94,5 +94,5 @@ const ASCIICOMPRESSION = {
   'YR1': 'w',
   'YR2': 'x',
   'Z': 'y',
-  'ZH': 'z',
+  'ZH': 'z'
 }
