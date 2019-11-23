@@ -1,5 +1,0 @@
-CH -> C
-JH -> J
-DH -> Q
-SH -> X
-N -> NN

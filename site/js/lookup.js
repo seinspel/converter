@@ -23,6 +23,8 @@ function lookup (word) {
   const result = dict[word.toUpperCase()]
   if (result instanceof Array) {
     return result
+  } else if (result === undefined) {
+    return []
   }
   return [result]
 }
@@ -47,7 +49,9 @@ function process () {
 }
 
 function figureOutCapitalization (original, converted) {
-  if (original.toUpperCase() === original) {
+  if (original === 'I') { // special case
+    return converted
+  } else if (original.toUpperCase() === original) {
     // all caps
     return converted.toUpperCase()
   } else if (original[0].toUpperCase() === original[0]) {
@@ -66,22 +70,35 @@ function convertText (text, withStress) {
   console.log(chunks)
   let result = ''
   for (let chunk of chunks) {
-    const lookupResults = lookup(chunk)
+    if (!/[a-zA-Z]/.test(chunk)) {
+      // chunk is a special character, like a space or a comma
+      result += chunk
+      continue
+    }
+    let lookupResults = lookup(chunk)
+    if (lookupResults.length === 0) { // no entry was found
+      // see if we can find a base form
+      const chunkUpper = chunk.toUpperCase()
+      let toAppend = ''
+      if (chunkUpper.slice(-3) === "ING" && (lookupResults = lookup(chunk.slice(0, -3)))) {
+        toAppend = 'HW' // = IH0 NG
+      } else if (chunkUpper.slice(-2) === "'S" && (lookupResults = lookup(chunk.slice(0, -2)))) {
+        toAppend = '\'z' // = ' Z
+      } else if (chunkUpper.slice(-1) === "S" && (lookupResults = lookup(chunk.slice(0, -1)))) {
+        toAppend = 'z' // = Z
+      } else if (chunkUpper.slice(-2) === "ED" && (lookupResults = lookup(chunk.slice(0, -2)))) {
+        toAppend = '7' // = D
+      } else { // we didn't find anything -> abort this
+        result += `???${chunk}???`
+        continue
+      }
+      for (const i in lookupResults) {
+        lookupResults[i] += toAppend
+      }
+    }
     let allConverted = []
     for (const variant of lookupResults) {
       const phons = decodePhonemes(variant)
-      if (!phons) {
-        if (/[a-zA-Z]/.test(chunk)) {
-          // chunk is a real word but it's not in the dictionary
-          // try to find a base form of the word
-          // TODO: find base form
-          allConverted.push(`???${chunk}???`)
-        } else {
-          // chunk is a special character; probably a comma or so
-          allConverted.push(chunk)
-        }
-        continue
-      }
       const converted = assemble(phons, withStress)
       allConverted.push(figureOutCapitalization(chunk, converted))
     }
