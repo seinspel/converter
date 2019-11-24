@@ -24,7 +24,7 @@ function lookup (word) {
   if (result instanceof Array) {
     return result
   } else if (result === undefined) {
-    return []
+    return
   }
   return [result]
 }
@@ -76,12 +76,15 @@ function convertText (text, withStress) {
       continue
     }
     let lookupResults = lookup(chunk)
-    if (lookupResults.length === 0) { // no entry was found
+    if (lookupResults === undefined) { // no entry was found
       // see if we can find a base form
       const chunkUpper = chunk.toUpperCase()
       let toAppend = ''
       if (chunkUpper.slice(-3) === "ING" && (lookupResults = lookup(chunk.slice(0, -3)))) {
         toAppend = 'HW' // = IH0 NG
+      // the order of the following checks is very important. the most specific one needs to go first
+      } else if (chunkUpper.slice(-3) === "S'S" && (lookupResults = lookup(chunk.slice(0, -3)))) {
+        toAppend = 'z\'z' // = Z ' Z
       } else if (chunkUpper.slice(-2) === "'S" && (lookupResults = lookup(chunk.slice(0, -2)))) {
         toAppend = '\'z' // = ' Z
       } else if (chunkUpper.slice(-1) === "S" && (lookupResults = lookup(chunk.slice(0, -1)))) {
