@@ -4,8 +4,8 @@
 <head>
   <meta charset="utf-8">
 
-  <title>New English</title>
-  <meta name="description" content="The HTML5 Herald">
+  <title>Sein spelling converter</title>
+  <meta name="description" content="Sein spelling converter">
   <meta name="author" content="SitePoint">
 
   <!--[if lt IE 9]>
@@ -16,25 +16,62 @@
   <script src="js/constants.js"></script>
   <script src="js/asciidecompression.js"></script>
   <link rel="stylesheet" href="css/bulma.css">
+  <link rel="stylesheet" href="css/custom.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
 </head>
 
 <body onload="prepare()">
-  <div>
-    <!-- <h1>Converter from old English to new English</h1> -->
-    <h1>Converter</h1>
-    <textarea class="textarea" placeholder="10 lines of textarea" id="input" rows="10" cols="20"></textarea>
-  </div>
-  <div>
-    <input id="withStress" type="checkbox">
-    <label for="withStress">with stress</label>
-    <button id="clickbutton" type="button">Convert</button>
-  </div>
-  <div>
-    <p>Output</p>
-    <textarea readonly id="output" rows="20" cols="100"></textarea>
-  </div>
-  <div>
-    <button id="testcases" type="button">Test cases</button>
-  </div>
+  <section class="section">
+    <div class="container">
+      <h1 class="title">Convert from Traditional spelling to Sein spelling</h1>
+      <div class="field">
+	<label class="label">Input</label>
+	<div class="control">
+	  <textarea class="textarea" placeholder="Write here..." id="input" rows="10"></textarea>
+	</div>
+      </div>
+      <div class="field is-grouped">
+	<div class="control">
+	  <label class="checkbox">
+	    <input id="withMerger" type="checkbox" checked>
+	    with cot-caught merger
+	  </label>
+	</div>
+	<div class="control">
+	  <label class="checkbox">
+	    <input id="withStress" type="checkbox">
+	    with stress markers
+	  </label>
+	</div>
+	<div class="control">
+	  <label class="checkbox">
+	    <input id="withMacrons" type="checkbox">
+	    with macrons
+	  </label>
+	</div>
+      </div>
+      <div class="field">
+	<div class="control">
+	  <button class="button is-link" id="clickbutton" type="button">Convert</button>
+	</div>
+      </div>
+      <div class="has-text-centered">
+	<span class="icon is-size-1">
+	  <i class="fas fa-arrow-circle-down"></i>
+	</span>
+      </div>
+      <div class="field">
+	<label class="label">Output</label>
+	<div class="control">
+	  <textarea class="textarea is-family-secondary is-size-5" readonly id="output" rows="10"></textarea>
+	</div>
+      </div>
+      <div class="field">
+	<div class="control">
+	  <button class="button" id="testcases" type="button">Test cases</button>
+	</div>
+      </div>
+    </div>
+  </section>
 </body>
 </html>

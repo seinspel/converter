@@ -42,8 +42,10 @@ function decodePhonemes (letters) {
 
 function process () {
   const text = document.getElementById('input').value
+  const withMerger = document.getElementById('withMerger').checked
   const withStress = document.getElementById('withStress').checked
-  const result = convertText(text, withStress)
+  const withMacrons = document.getElementById('withMacrons').checked
+  const result = convertText(text, withStress, withMacrons, withMerger)
   let output = document.getElementById('output')
   output.value = result
 }
@@ -65,7 +67,7 @@ function figureOutCapitalization (original, converted) {
 /**
  * Convert a text in normal English to new English
  */
-function convertText (text, withStress) {
+function convertText (text, withStress, withMacrons, withMerger) {
   const chunks = text.split(/([^a-zA-Z'-])/)
   console.log(chunks)
   let result = ''
@@ -102,7 +104,7 @@ function convertText (text, withStress) {
     let allConverted = []
     for (const variant of lookupResults) {
       const phons = decodePhonemes(variant)
-      const converted = assemble(phons, withStress)
+      const converted = assemble(phons, withStress, withMacrons, withMerger)
       allConverted.push(figureOutCapitalization(chunk, converted))
     }
     if (allConverted.length === 1) {

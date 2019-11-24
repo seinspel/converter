@@ -16,21 +16,21 @@ const unambiguousBeforeR = ['B', 'CH', 'D', 'DH', 'F', 'G', 'JH', 'K', 'L', 'M',
 /**
  * Assemble the spelling from the pronunciation
  */
-function assemble (phons, withStress) {
+function assemble (phons, withStress, withMacrons, withMerger) {
   let result = ''
   const numSyllables = countVowels(phons)
   for (let i = 0; i < phons.length; i++) {
     // if the previous symbol is the apostrophe, then use the one before that
     const behind = phons[i - 1] === '\'' ? phons[i - 2] : phons[i - 1]
     const newLetters = convertSymbol(phons[i], behind, phons[i + 1],
-      numSyllables, withStress)
+      numSyllables, withStress, withMacrons, withMerger)
 
     // avoid ambiguities by inserting apostrophes when two times the same vowel
     // appears accross phoneme boundaries or when the combinations
     // c+h or s+h appear
     const lastOld = result.slice(-1)[0]
     const firstNew = newLetters[0]
-    if (('aeiouyáéíóúý'.includes(lastOld) && lastOld === firstNew) ||
+    if (('aeiouyáéíóúýāēīōū'.includes(lastOld) && lastOld === firstNew) ||
           ((lastOld === 'c' || lastOld === 's') && firstNew === 'h')) {
       result += '\''
     }
@@ -55,14 +55,19 @@ function countVowels (phons) {
 /**
  * Convert a pronunciation symbol into letters for the spelling
  */
-function convertSymbol (symbol, behind, ahead1, numSyllables, withStress) {
+function convertSymbol (symbol, behind, ahead1, numSyllables, withStress, withMacrons, withMerger) {
   const hasPrimary = (symbol.slice(-1) === '1')
   const hasSecondary = (symbol.slice(-1) === '2')
   const hasStressMarker = ['0', '1', '2'].includes(symbol.slice(-1))
   const symbolNoS = hasStressMarker ? symbol.slice(0, -1) : symbol
   // const ahead1NoS = ahead1 ? ahead1.substr(0, 2) : ''
   const stress = (withStress && hasPrimary && numSyllables >= 2) ? 0 : 1
-  const lexicalSets = LEXICALSETS
+  let lexicalSets
+  if (withMacrons) {
+    lexicalSets = LEXICALSETS_MACRON
+  } else {
+    lexicalSets = LEXICALSETS
+  }
   const consonants = CONSONANTS
   switch (symbolNoS) {
     // vowels
@@ -76,7 +81,11 @@ function convertSymbol (symbol, behind, ahead1, numSyllables, withStress) {
       // }
       return lexicalSets.STRUT[stress]
     case 'AO':
-      return lexicalSets.THOUGHT[stress]
+      if (withMerger) {
+        return lexicalSets.LOT[stress]
+      } else {
+        return lexicalSets.THOUGHT[stress]
+      }
     case 'AR':
       return lexicalSets.START[stress]
     case 'AW':
