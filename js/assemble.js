@@ -55,7 +55,8 @@ function countVowels (phons) {
 /**
  * Convert a pronunciation symbol into letters for the spelling
  */
-function convertSymbol (symbol, behind, ahead1, numSyllables, withStress, withMacrons, withMerger) {
+function convertSymbol (symbol, behind, ahead1, numSyllables, withStress,
+                        withMacrons, withMerger) {
   const hasPrimary = (symbol.slice(-1) === '1')
   // const hasSecondary = (symbol.slice(-1) === '2')
   const hasStressMarker = ['0', '1', '2'].includes(symbol.slice(-1))

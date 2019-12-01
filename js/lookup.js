@@ -82,16 +82,22 @@ function convertText (text, withStress, withMacrons, withMerger) {
       // see if we can find a base form
       const chunkUpper = chunk.toUpperCase()
       let toAppend = ''
-      if (chunkUpper.slice(-3) === 'ING' && (lookupResults = lookup(chunk.slice(0, -3)))) {
+      if (chunkUpper.slice(-3) === 'ING' &&
+          (lookupResults = lookup(chunk.slice(0, -3)))) {
         toAppend = 'HW' // = IH0 NG
-      // the order of the following checks is very important. the most specific one needs to go first
-      } else if (chunkUpper.slice(-3) === "S'S" && (lookupResults = lookup(chunk.slice(0, -3)))) {
+      // the order of the following checks is very important.
+      // the most specific one needs to go first
+      } else if (chunkUpper.slice(-3) === "S'S" &&
+          (lookupResults = lookup(chunk.slice(0, -3)))) {
         toAppend = 'z\'z' // = Z ' Z
-      } else if (chunkUpper.slice(-2) === "'S" && (lookupResults = lookup(chunk.slice(0, -2)))) {
+      } else if (chunkUpper.slice(-2) === "'S" &&
+          (lookupResults = lookup(chunk.slice(0, -2)))) {
         toAppend = '\'z' // = ' Z
-      } else if (chunkUpper.slice(-1) === 'S' && (lookupResults = lookup(chunk.slice(0, -1)))) {
+      } else if (chunkUpper.slice(-1) === 'S' &&
+          (lookupResults = lookup(chunk.slice(0, -1)))) {
         toAppend = 'z' // = Z
-      } else if (chunkUpper.slice(-2) === 'ED' && (lookupResults = lookup(chunk.slice(0, -2)))) {
+      } else if (chunkUpper.slice(-2) === 'ED' &&
+          (lookupResults = lookup(chunk.slice(0, -2)))) {
         toAppend = '7' // = D
       } else { // we didn't find anything -> abort this
         result += `<${chunk}>`
