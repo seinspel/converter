@@ -4,12 +4,12 @@ var dict = {}
 
 function prepare () {
   // set handler for 'convert' button
-  let clickButton = document.getElementById('clickbutton')
+  const clickButton = document.getElementById('clickbutton')
   clickButton.addEventListener('click', process, false)
   document.getElementById('testcases').addEventListener('click', tests, false)
 
   // download dictionary
-  let oReq = new XMLHttpRequest()
+  const oReq = new XMLHttpRequest()
   oReq.addEventListener('load', loadDict)
   oReq.open('GET', './data/dictionary.json')
   oReq.send()
@@ -33,7 +33,7 @@ function decodePhonemes (letters) {
   if (!letters) {
     return
   }
-  let phons = []
+  const phons = []
   for (const letter of letters) {
     phons.push(ASCIIDECOMPRESSION[letter])
   }
@@ -46,7 +46,7 @@ function process () {
   const withStress = document.getElementById('withStress').checked
   const withMacrons = document.getElementById('withMacrons').checked
   const result = convertText(text, withStress, withMacrons, withMerger)
-  let output = document.getElementById('output')
+  const output = document.getElementById('output')
   output.value = result
 }
 
@@ -71,7 +71,7 @@ function convertText (text, withStress, withMacrons, withMerger) {
   const chunks = text.split(/([^a-zA-Z'-])/)
   console.log(chunks)
   let result = ''
-  for (let chunk of chunks) {
+  for (const chunk of chunks) {
     if (!/[a-zA-Z]/.test(chunk)) {
       // chunk is a special character, like a space or a comma
       result += chunk
@@ -82,26 +82,26 @@ function convertText (text, withStress, withMacrons, withMerger) {
       // see if we can find a base form
       const chunkUpper = chunk.toUpperCase()
       let toAppend = ''
-      if (chunkUpper.slice(-3) === "ING" && (lookupResults = lookup(chunk.slice(0, -3)))) {
+      if (chunkUpper.slice(-3) === 'ING' && (lookupResults = lookup(chunk.slice(0, -3)))) {
         toAppend = 'HW' // = IH0 NG
       // the order of the following checks is very important. the most specific one needs to go first
       } else if (chunkUpper.slice(-3) === "S'S" && (lookupResults = lookup(chunk.slice(0, -3)))) {
         toAppend = 'z\'z' // = Z ' Z
       } else if (chunkUpper.slice(-2) === "'S" && (lookupResults = lookup(chunk.slice(0, -2)))) {
         toAppend = '\'z' // = ' Z
-      } else if (chunkUpper.slice(-1) === "S" && (lookupResults = lookup(chunk.slice(0, -1)))) {
+      } else if (chunkUpper.slice(-1) === 'S' && (lookupResults = lookup(chunk.slice(0, -1)))) {
         toAppend = 'z' // = Z
-      } else if (chunkUpper.slice(-2) === "ED" && (lookupResults = lookup(chunk.slice(0, -2)))) {
+      } else if (chunkUpper.slice(-2) === 'ED' && (lookupResults = lookup(chunk.slice(0, -2)))) {
         toAppend = '7' // = D
       } else { // we didn't find anything -> abort this
-        result += `???${chunk}???`
+        result += `<${chunk}>`
         continue
       }
       for (const i in lookupResults) {
         lookupResults[i] += toAppend
       }
     }
-    let allConverted = []
+    const allConverted = []
     for (const variant of lookupResults) {
       const phons = decodePhonemes(variant)
       const converted = assemble(phons, withStress, withMacrons, withMerger)
@@ -117,7 +117,7 @@ function convertText (text, withStress, withMacrons, withMerger) {
 }
 
 function tests () {
-  let inputField = document.getElementById('input')
+  const inputField = document.getElementById('input')
   inputField.value = `Foreskin SEEING dying saying behalf suing teriyaki
 evacuate boyhood adhere bloodshed midyear knowing away short awestruck withhold
 adulthood malevolent criminal fewer lure neurology careless what's think

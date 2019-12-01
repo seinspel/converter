@@ -42,10 +42,10 @@ function assemble (phons, withStress, withMacrons, withMerger) {
 
 function countVowels (phons) {
   let numVowels = 0
-  for (let phon of phons) {
+  for (const phon of phons) {
     if (phon && vowels.includes(phon.slice(0, -1))) {
       numVowels++
-    } else if (phon && (phon === 'AX' || phon === 'AXR')){
+    } else if (phon && (phon === 'AX' || phon === 'AXR')) {
       numVowels++
     }
   }
@@ -57,7 +57,7 @@ function countVowels (phons) {
  */
 function convertSymbol (symbol, behind, ahead1, numSyllables, withStress, withMacrons, withMerger) {
   const hasPrimary = (symbol.slice(-1) === '1')
-  const hasSecondary = (symbol.slice(-1) === '2')
+  // const hasSecondary = (symbol.slice(-1) === '2')
   const hasStressMarker = ['0', '1', '2'].includes(symbol.slice(-1))
   const symbolNoS = hasStressMarker ? symbol.slice(0, -1) : symbol
   // const ahead1NoS = ahead1 ? ahead1.substr(0, 2) : ''
