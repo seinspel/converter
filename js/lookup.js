@@ -23,6 +23,8 @@ function lookup (word) {
   const result = dict[word.toUpperCase()]
   if (result instanceof Array) {
     return result
+  } else if (result instanceof Object) {
+    return result
   } else if (result === undefined) {
     return
   }
@@ -56,6 +58,8 @@ function figureOutCapitalization (original, converted) {
   } else if (original.toUpperCase() === original) {
     // all caps
     return converted.toUpperCase()
+  } else if (original[0] === "'") {
+    return converted
   } else if (original[0].toUpperCase() === original[0]) {
     // only first letter is upper case
     // (or more precisely: not all letters are upper case but the first one is)
@@ -78,35 +82,59 @@ function convertText (text, withStress, withMacrons, withMerger) {
       continue
     }
     let lookupResults = lookup(chunk)
-    if (lookupResults === undefined) { // no entry was found
+    if (lookupResults === undefined) {
+      // ======================== no entry was found ==========================
       // see if we can find a base form
       const chunkUpper = chunk.toUpperCase()
       let toAppend = ''
+      let suitableIdentifiers = []
+      // ====================== try different suffixes ========================
       if (chunkUpper.slice(-3) === 'ING' &&
           (lookupResults = lookup(chunk.slice(0, -3)))) {
         toAppend = 'HW' // = IH0 NG
+        suitableIdentifiers = ['v'] // verb
       // the order of the following checks is very important.
       // the most specific one needs to go first
       } else if (chunkUpper.slice(-3) === "S'S" &&
           (lookupResults = lookup(chunk.slice(0, -3)))) {
         toAppend = 'z\'z' // = Z ' Z
+        suitableIdentifiers = ['n'] // noun
       } else if (chunkUpper.slice(-2) === "'S" &&
           (lookupResults = lookup(chunk.slice(0, -2)))) {
         toAppend = '\'z' // = ' Z
+        suitableIdentifiers = ['n'] // noun
       } else if (chunkUpper.slice(-1) === 'S' &&
           (lookupResults = lookup(chunk.slice(0, -1)))) {
         toAppend = 'z' // = Z
+        suitableIdentifiers = ['n', 'v'] // noun or verb
       } else if (chunkUpper.slice(-2) === 'ED' &&
           (lookupResults = lookup(chunk.slice(0, -2)))) {
         toAppend = '7' // = D
+        suitableIdentifiers = ['v'] // verb
       } else { // we didn't find anything -> abort this
         result += `<${chunk}>`
         continue
       }
+
+      // filter out unsuitable versions and append the suffix
+      const tempList = []
       for (const i in lookupResults) {
-        lookupResults[i] += toAppend
+        if (lookupResults instanceof Array || // if array, just append
+            suitableIdentifiers.indexOf(i) !== -1) { // else check identifier
+          tempList.push(lookupResults[i] + toAppend)
+        }
       }
+      lookupResults = tempList
+    } else if (lookupResults instanceof Object) {
+      // convert object to list
+      const tempList = []
+      for (const i in lookupResults) {
+        tempList.push(lookupResults[i])
+      }
+      lookupResults = tempList
     }
+
+    // ================== convert pronunciation to spelling ===================
     const allConverted = []
     for (const variant of lookupResults) {
       const phons = decodePhonemes(variant)
