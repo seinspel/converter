@@ -111,6 +111,14 @@ function convertText (text, withStress, withMacrons, withMerger) {
           (lookupResults = lookup(chunk.slice(0, -2)))) {
         toAppend = '7' // = D
         suitableIdentifiers = ['v'] // verb
+      } else if (chunkUpper.slice(-3) === 'LLY' &&
+          (lookupResults = lookup(chunk.slice(0, -2)))) {
+        toAppend = 'K' // = II
+        suitableIdentifiers = ['j'] // adjective
+      } else if (chunkUpper.slice(-2) === 'LY' &&
+          (lookupResults = lookup(chunk.slice(0, -2)))) {
+        toAppend = 'TK' // = L II
+        suitableIdentifiers = ['j'] // adjective
       } else { // we didn't find anything -> abort this
         result += `<${chunk}>`
         continue
