@@ -38,9 +38,9 @@ const LEXICALSETS_MACRON = {
   LOT: ['ā', 'ā'],
   FACE: ['ē', 'ē'],
   FLEECE: ['ī', 'ī'],
-  GOAT: ['óu', 'ou'],
+  GOAT: ['ō', 'ō'],
   GOOSE: ['ū', 'ū'],
-  THOUGHT: ['ō', 'ō'],
+  THOUGHT: ['óo', 'oo'],
   PRICE: ['ái', 'ai'],
   MOUTH: ['áu', 'au'],
   CHOICE: ['ói', 'oi'],
@@ -80,4 +80,31 @@ const CONSONANTS = {
   Y: 'j',
   Z: 'z',
   ZH: 'jh'
+}
+
+const CONSONANTS_MACRON = {
+  B: 'b',
+  CH: 'tc',
+  D: 'd',
+  DH: 'q',
+  F: 'f',
+  G: 'g',
+  HH: 'h',
+  JH: 'dʒ',
+  K: 'k',
+  L: 'l',
+  M: 'm',
+  N: 'n',
+  NG: 'ng',
+  P: 'p',
+  R: 'r',
+  S: 's',
+  SH: 'c',
+  T: 't',
+  TH: 'x',
+  V: 'v',
+  W: 'w',
+  Y: 'j',
+  Z: 'z',
+  ZH: 'ʒ'
 }

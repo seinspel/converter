@@ -64,12 +64,14 @@ function convertSymbol (symbol, behind, ahead1, numSyllables, withStress,
   // const ahead1NoS = ahead1 ? ahead1.substr(0, 2) : ''
   const stress = (withStress && hasPrimary && numSyllables >= 2) ? 0 : 1
   let lexicalSets
+  let consonants
   if (withMacrons) {
     lexicalSets = LEXICALSETS_MACRON
+    consonants = CONSONANTS_MACRON
   } else {
     lexicalSets = LEXICALSETS
+    consonants = CONSONANTS
   }
-  const consonants = CONSONANTS
   switch (symbolNoS) {
     // vowels
     case 'AA':
