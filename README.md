@@ -1,3 +1,3 @@
-# Converter for Sein spelling
+# Converter for Seinspel
 
-A static website that converts traditional spelling to Sein spelling with Javascript.
+A static website that converts traditional spelling to Seinspel with Javascript.
