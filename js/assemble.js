@@ -33,6 +33,8 @@ function assemble (phons, withStress, withMacrons, withMerger) {
     if (('aeiouyáéíóúýāēīōū'.includes(lastOld) && lastOld === firstNew) ||
           ((lastOld === 'c' || lastOld === 's') && firstNew === 'h')) {
       result += '\''
+    } else if (lastOld === 'd' && firstNew === 'j') {
+      result += 'h'
     }
 
     result += newLetters
