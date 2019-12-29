@@ -1,29 +1,30 @@
 'use strict'
 
-const vowels = ['AA', 'AE', 'AH', 'AO', 'AR', 'AW', 'AY', 'EH', 'EL', 'EM', 'EN',
-  'ER', 'EY', 'IH', 'II', 'IR', 'IY', 'OR', 'OW', 'OY', 'UH', 'UR', 'UW', 'YR']
+const vowels = ['A', 'AH', 'AR', 'AW', 'EE', 'IER', 'EH', 'EIR', 'EW', 'EWR', 'EY',
+    'AHY', 'ə', 'əR', 'IH', 'II', 'IRE', 'O', 'OA', 'OH', 'OIR', 'OO', 'OOR', 'OR',
+    'OW', 'OWR', 'OY', 'UH', 'UR', 'U']
 // these consonants cannot be pronounced immediately before an L
 // (counterexample: R (curl))
-const unambiguousBeforeL = ['B', 'CH', 'D', 'DH', 'F', 'G', 'JH', 'K', 'P', 'S',
+const unambiguousBeforeL = ['B', 'CH', 'D', 'DH', 'F', 'G', 'J', 'K', 'P', 'S',
   'SH', 'T', 'TH', 'V', 'Z', 'ZH']
-const unambiguousBeforeM = ['B', 'CH', 'D', 'DH', 'F', 'G', 'JH', 'K', 'P', 'S',
+const unambiguousBeforeM = ['B', 'CH', 'D', 'DH', 'F', 'G', 'J', 'K', 'P', 'S',
   'SH', 'T', 'TH', 'V', 'Z', 'ZH']
-const unambiguousBeforeN = ['B', 'CH', 'D', 'DH', 'F', 'G', 'JH', 'K', 'P', 'S',
+const unambiguousBeforeN = ['B', 'CH', 'D', 'DH', 'F', 'G', 'J', 'K', 'P', 'S',
   'SH', 'T', 'TH', 'V', 'Z', 'ZH']
-const unambiguousBeforeR = ['B', 'CH', 'D', 'DH', 'F', 'G', 'JH', 'K', 'L', 'M',
+const unambiguousBeforeR = ['B', 'CH', 'D', 'DH', 'F', 'G', 'J', 'K', 'L', 'M',
   'N', 'NG', 'P', 'S', 'SH', 'T', 'TH', 'V', 'Z', 'ZH']
 
 /**
  * Assemble the spelling from the pronunciation
  */
-function assemble (phons, withStress, withMacrons, withMerger) {
+function assemble (phons, withStress, withMerger) {
   let result = ''
   const numSyllables = countVowels(phons)
   for (let i = 0; i < phons.length; i++) {
     // if the previous symbol is the apostrophe, then use the one before that
     const behind = phons[i - 1] === '\'' ? phons[i - 2] : phons[i - 1]
     const newLetters = convertSymbol(phons[i], behind, phons[i + 1],
-      numSyllables, withStress, withMacrons, withMerger)
+      numSyllables, withStress, withMerger)
 
     // avoid ambiguities by inserting apostrophes when two times the same vowel
     // appears accross phoneme boundaries or when the combinations
@@ -47,7 +48,7 @@ function countVowels (phons) {
   for (const phon of phons) {
     if (phon && vowels.includes(phon.slice(0, -1))) {
       numVowels++
-    } else if (phon && (phon === 'AX' || phon === 'AXR')) {
+    } else if (phon && (phon === 'ə' || phon === 'əR' || phon === 'II')) {
       numVowels++
     }
   }
@@ -58,79 +59,95 @@ function countVowels (phons) {
  * Convert a pronunciation symbol into letters for the spelling
  */
 function convertSymbol (symbol, behind, ahead1, numSyllables, withStress,
-                        withMacrons, withMerger) {
+                        withMerger) {
   const hasPrimary = (symbol.slice(-1) === '1')
   // const hasSecondary = (symbol.slice(-1) === '2')
   const hasStressMarker = ['0', '1', '2'].includes(symbol.slice(-1))
   const symbolNoS = hasStressMarker ? symbol.slice(0, -1) : symbol
   // const ahead1NoS = ahead1 ? ahead1.substr(0, 2) : ''
   const stress = (withStress && hasPrimary && numSyllables >= 2) ? 0 : 1
-  let lexicalSets
-  let consonants
-  if (withMacrons) {
-    lexicalSets = LEXICALSETS_MACRON
-    consonants = CONSONANTS_MACRON
-  } else {
-    lexicalSets = LEXICALSETS
-    consonants = CONSONANTS
-  }
+  const lexicalSets = LEXICALSETS
+  const consonants = CONSONANTS
   switch (symbolNoS) {
     // vowels
-    case 'AA':
-      return lexicalSets.LOT[stress]
-    case 'AE':
+    case 'A':
       return lexicalSets.TRAP[stress]
     case 'AH':
-      // if (!hasPrimary && !hasSecondary) {
-      //   return lexicalSets.commA
-      // }
-      return lexicalSets.STRUT[stress]
-    case 'AO':
-      if (withMerger) {
-        return lexicalSets.LOT[stress]
-      } else {
-        return lexicalSets.THOUGHT[stress]
-      }
+      return lexicalSets.PALM[stress]
+    case 'AHY':
+      return lexicalSets.PRICE[stress]
     case 'AR':
       return lexicalSets.START[stress]
     case 'AW':
-      return lexicalSets.MOUTH[stress]
-    case 'AX':
-      return lexicalSets.commA
-    case 'AXR':
-      if (!ahead1 && unambiguousBeforeR.includes(behind)) {
-        return consonants.R
+      if (withMerger) {
+        if (ahead1 == 'RR') {
+          return lexicalSets.THOUGHT[stress]
+        } else {
+          return lexicalSets.PALM[stress]
+        }
+      } else {
+        return lexicalSets.THOUGHT[stress]
       }
-      return lexicalSets.lettER
-    case 'AY':
-      return lexicalSets.PRICE[stress]
+    case 'EE':
+      return lexicalSets.FLEECE[stress]
     case 'EH':
       return lexicalSets.DRESS[stress]
-    case 'ER':
+    case 'EIR':
       return lexicalSets.SQUARE[stress]
+    case 'EW':
+      return lexicalSets.CUTE[stress]
+    case 'EWR':
+      return lexicalSets.CURE[stress]
     case 'EY':
       return lexicalSets.FACE[stress]
+    case 'ə':
+      return lexicalSets.commA
+    case 'əR':
+      if (!ahead1 && unambiguousBeforeR.includes(behind)) {
+        return consonants.RR
+      }
+      return lexicalSets.lettER
+    case 'IER':
+      return lexicalSets.NEAR[stress]
     case 'IH':
       return lexicalSets.KIT[stress]
     case 'II':
       return lexicalSets.happY
-    case 'IR':
-      return lexicalSets.NEAR[stress]
-    case 'IY':
-      return lexicalSets.FLEECE[stress]
-    case 'OR':
-      return lexicalSets.FORCE[stress]
-    case 'OW':
+    case 'IRE':
+      return lexicalSets.FIRE[stress]
+    case 'O':
+      if (withMerger) {
+        if (ahead1 == 'RR') {
+          return lexicalSets.THOUGHT[stress]
+        } else {
+          return lexicalSets.PALM[stress]
+        }
+      } else {
+        return lexicalSets.LOT[stress]
+      }
+    case 'OA':
+      return lexicalSets.CLOTH[stress]
+    case 'OH':
       return lexicalSets.GOAT[stress]
+    case 'OIR':
+      return lexicalSets.COIR[stress]
+    case 'OO':
+      return lexicalSets.GOOSE[stress]
+    case 'OOR':
+      return lexicalSets.POOR[stress]
+    case 'OR':
+      return lexicalSets.NORTH[stress]
+    case 'OW':
+      return lexicalSets.MOUTH[stress]
+    case 'OWR':
+      return lexicalSets.FLOUR[stress]
     case 'OY':
       return lexicalSets.CHOICE[stress]
-    case 'UH':
+    case 'U':
       return lexicalSets.FOOT[stress]
+    case 'UH':
+      return lexicalSets.STRUT[stress]
     case 'UR':
-      return lexicalSets.LURE[stress]
-    case 'UW':
-      return lexicalSets.GOOSE[stress]
-    case 'YR':
       // if (!hasPrimary && !hasSecondary) {
       //   if (!ahead1 && unambiguousBeforeR.includes(behind)) {
       //     return consonants.R
@@ -167,19 +184,20 @@ function convertSymbol (symbol, behind, ahead1, numSyllables, withStress,
     case 'F':
     case 'G':
     case 'HH':
-    case 'JH':
+    case 'J':
     case 'K':
     case 'L':
     case 'M':
     case 'N':
     case 'P':
-    case 'R':
+    case 'RR':
     case 'S':
     case 'SH':
     case 'T':
     case 'TH':
     case 'V':
     case 'W':
+    case 'WH':
     case 'Y':
     case 'Z':
     case 'ZH':

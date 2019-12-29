@@ -23,54 +23,277 @@
 <body onload="prepare()">
   <section class="section">
     <div class="container">
-      <h1 class="title">Convert from Traditional spelling to Seinspel</h1>
+      <h1 class="title is-1">Convert from traditional spelling to Seinspel</h1>
       <div class="field">
-	<label class="label">Input</label>
-	<div class="control">
-	  <textarea class="textarea" placeholder="Write here..." id="input" rows="10"></textarea>
-	</div>
+        <label class="label">Input</label>
+        <div class="control">
+          <textarea class="textarea" placeholder="Write here..." id="input" rows="30"></textarea>
+        </div>
       </div>
       <div class="field is-grouped">
-	<div class="control">
-	  <label class="checkbox">
-	    <input id="withMerger" type="checkbox" checked>
-	    with cot-caught merger
-	  </label>
-	</div>
-	<div class="control">
-	  <label class="checkbox">
-	    <input id="withStress" type="checkbox">
-	    with stress markers
-	  </label>
-	</div>
-	<div class="control">
-	  <label class="checkbox">
-	    <input id="withMacrons" type="checkbox">
-	    with macrons
-	  </label>
-	</div>
+        <div class="control">
+          <label class="checkbox">
+            <input id="withMerger" type="checkbox">
+            with LOT-PALM-THOUGHT merger
+          </label>
+        </div>
+        <div class="control">
+          <label class="checkbox">
+            <input id="withStress" type="checkbox">
+            with stress markers
+          </label>
+        </div>
+        <div class="control">
+          <label class="checkbox">
+            <input id="withMacrons" type="checkbox">
+            with macrons
+          </label>
+        </div>
       </div>
       <div class="field">
-	<div class="control">
-	  <button class="button is-link" id="clickbutton" type="button">Convert</button>
-	</div>
+        <div class="control">
+          <button class="button is-link" id="clickbutton" type="button">Convert</button>
+        </div>
       </div>
       <div class="has-text-centered">
-	<span class="icon is-size-1">
-	  <i class="fas fa-arrow-circle-down"></i>
-	</span>
+        <span class="icon is-size-1">
+          <i class="fas fa-arrow-circle-down"></i>
+        </span>
       </div>
       <div class="field">
-	<label class="label">Output</label>
-	<div class="control">
-	  <textarea class="textarea is-family-secondary is-size-5" readonly id="output" rows="10"></textarea>
-	</div>
+        <label class="label">Output</label>
+        <div class="control">
+          <textarea class="textarea is-family-secondary is-size-6" readonly id="output" rows="30"></textarea>
+        </div>
       </div>
       <div class="field">
-	<div class="control">
-	  <button class="button" id="testcases" type="button">Test cases</button>
-	</div>
+        <div class="control">
+          <button class="button" id="testcases" type="button">Test cases</button>
+        </div>
       </div>
+
+      <hr>
+
+      <h3 class="title is-3">Custom spelling</h3>
+
+      <div class="columns">
+        <div class="column">
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">KIT</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="i" id="kit-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">DRESS</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="e" id="dress-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">TRAP</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="a" id="trap-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">LOT</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="o" id="lot-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">STRUT</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="y" id="strut-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">FOOT</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="u" id="foot-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">CLOTH</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="o" id="cloth-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">NURSE</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="ur" id="nurse-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">FLEECE</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="ii" id="fleece-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">FACE</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="ei" id="face-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">PALM</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="aa" id="palm-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">THOUGHT</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="oo" id="thought-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">GOAT</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="ou" id="goat-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">GOOSE</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="uu" id="goose-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">PRICE</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="ai" id="price-vowel"></div>
+        </div></div>
+      </div>
+
+      </div>
+      <div class="column">
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">CHOICE</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="oi" id="choice-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">MOUTH</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="au" id="mouth-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">CUTE</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="eu" id="cute-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">NEAR</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="iir" id="near-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">SQUARE</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="eir" id="square-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">START</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="aar" id="start-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">NORTH</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="oor" id="north-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">POOR</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="uur" id="poor-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">CURE</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="eur" id="cure-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">FIRE</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="air" id="fire-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">FLOUR</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="aur" id="flour-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">COIR</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="oir" id="coir-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">happY</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="i" id="happy-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">lettER</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="ur" id="letter-vowel"></div>
+        </div></div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal"><label class="label">commA</label></div>
+        <div class="field-body"><div class="field is-narrow">
+          <div class="control"><input class="input" type="text" value="e" id="comma-vowel"></div>
+        </div></div>
+      </div>
+
+        </div>
+      </div>
+
     </div>
   </section>
 </body>
