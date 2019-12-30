@@ -104,7 +104,7 @@ function convertSymbol (symbol, behind, ahead1, numSyllables, withStress,
       return lexicalSets.commA
     case 'əR':
       if (!ahead1 && unambiguousBeforeR.includes(behind)) {
-        return consonants.RR
+        return consonants.ER
       }
       return lexicalSets.lettER
     case 'IER':
@@ -158,17 +158,17 @@ function convertSymbol (symbol, behind, ahead1, numSyllables, withStress,
     // syllabic consonants
     case 'EL':
       if (!ahead1 && unambiguousBeforeL.includes(behind)) {
-        return consonants.L
+        return consonants.EL
       }
       return lexicalSets.commA + consonants.L
     case 'EM':
       if (!ahead1 && unambiguousBeforeM.includes(behind)) {
-        return consonants.M
+        return consonants.EM
       }
       return lexicalSets.commA + consonants.M
     case 'EN':
       if (unambiguousBeforeN.includes(behind) && (!ahead1 || ahead1 === '\'')) {
-        return consonants.N
+        return consonants.EN
       }
       return lexicalSets.commA + consonants.N
     // consonants

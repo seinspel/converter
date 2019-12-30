@@ -56,8 +56,7 @@ function process () {
     LEXICALSETS = LEXICALSETS_NORMAL
     CONSONANTS = CONSONANTS_NORMAL
   } else {
-    LEXICALSETS = loadSpelling()
-    CONSONANTS = CONSONANTS_NORMAL
+    [LEXICALSETS, CONSONANTS] = loadSpelling()
   }
   const result = convertText(text, withStress, withMerger)
   const output = document.getElementById('output')
@@ -68,7 +67,7 @@ function process () {
  * Load spelling from the text inputs
  */
 function loadSpelling () {
-  return {
+  const vowels = {
     KIT: ['', document.getElementById('kit-vowel').value],
     DRESS: ['', document.getElementById('dress-vowel').value],
     TRAP: ['', document.getElementById('trap-vowel').value],
@@ -100,6 +99,38 @@ function loadSpelling () {
     lettER: document.getElementById('letter-vowel').value,
     commA: document.getElementById('comma-vowel').value
   }
+  const consonants = {
+    B: document.getElementById('b-consonant').value,
+    CH: document.getElementById('ch-consonant').value,
+    D: document.getElementById('d-consonant').value,
+    DH: document.getElementById('dh-consonant').value,
+    EL: document.getElementById('el-consonant').value,
+    EM: document.getElementById('em-consonant').value,
+    EN: document.getElementById('en-consonant').value,
+    ER: document.getElementById('er-consonant').value,
+    F: document.getElementById('f-consonant').value,
+    G: document.getElementById('g-consonant').value,
+    HH: document.getElementById('h-consonant').value,
+    J: document.getElementById('j-consonant').value,
+    K: document.getElementById('k-consonant').value,
+    L: document.getElementById('l-consonant').value,
+    M: document.getElementById('m-consonant').value,
+    N: document.getElementById('n-consonant').value,
+    NG: document.getElementById('ng-consonant').value,
+    P: document.getElementById('p-consonant').value,
+    RR: document.getElementById('r-consonant').value,
+    S: document.getElementById('s-consonant').value,
+    SH: document.getElementById('sh-consonant').value,
+    T: document.getElementById('t-consonant').value,
+    TH: document.getElementById('th-consonant').value,
+    V: document.getElementById('v-consonant').value,
+    W: document.getElementById('w-consonant').value,
+    WH: document.getElementById('wh-consonant').value,
+    Y: document.getElementById('y-consonant').value,
+    Z: document.getElementById('z-consonant').value,
+    ZH: document.getElementById('zh-consonant').value
+  }
+  return [vowels, consonants]
 }
 
 function figureOutCapitalization (original, converted) {
@@ -189,7 +220,7 @@ function findBaseForm (chunk) {
  * Convert a text in normal English to new English
  */
 function convertText (text, withStress, withMerger) {
-  const chunks = text.split(/([^a-zA-Z'-])/)
+  const chunks = text.split(/([^a-zA-Z'])/)
   console.log(chunks)
   let result = ''
   for (const chunk of chunks) {
