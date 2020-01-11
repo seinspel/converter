@@ -106,8 +106,10 @@ function loadSpelling () {
     N: document.getElementById('n-consonant').value,
     NG: document.getElementById('ng-consonant').value,
     P: document.getElementById('p-consonant').value,
-    RR: document.getElementById('r-consonant').value,
-    S: document.getElementById('s-consonant').value,
+    CRV: document.getElementById('crv-consonant').value,
+    VRV: document.getElementById('vrv-consonant').value,
+    CS: document.getElementById('cs-consonant').value,
+    VS: document.getElementById('vs-consonant').value,
     SH: document.getElementById('sh-consonant').value,
     T: document.getElementById('t-consonant').value,
     TH: document.getElementById('th-consonant').value,
@@ -115,7 +117,8 @@ function loadSpelling () {
     W: document.getElementById('w-consonant').value,
     WH: document.getElementById('wh-consonant').value,
     Y: document.getElementById('y-consonant').value,
-    Z: document.getElementById('z-consonant').value,
+    CZ: document.getElementById('cz-consonant').value,
+    VZ: document.getElementById('vz-consonant').value,
     ZH: document.getElementById('zh-consonant').value
   }
   return [vowels, consonants]

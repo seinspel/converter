@@ -177,6 +177,24 @@ function convertSymbol (symbol, behind, ahead1, numSyllables, withStress,
         return consonants.N
       }
       return consonants.NG
+    case 'RR':
+      if (behind === undefined || countVowels([behind]) === 0) {
+        return consonants.CRV
+      } else {
+        return consonants.VRV
+      }
+    case 'S':
+      if (behind === undefined || countVowels([behind]) === 0) {
+        return consonants.CS
+      } else {
+        return consonants.VS
+      }
+    case 'Z':
+      if (behind === undefined || countVowels([behind]) === 0) {
+        return consonants.CZ
+      } else {
+        return consonants.VZ
+      }
     case 'B':
     case 'CH':
     case 'D':
@@ -190,8 +208,6 @@ function convertSymbol (symbol, behind, ahead1, numSyllables, withStress,
     case 'M':
     case 'N':
     case 'P':
-    case 'RR':
-    case 'S':
     case 'SH':
     case 'T':
     case 'TH':
@@ -199,7 +215,6 @@ function convertSymbol (symbol, behind, ahead1, numSyllables, withStress,
     case 'W':
     case 'WH':
     case 'Y':
-    case 'Z':
     case 'ZH':
       return consonants[symbolNoS]
     default:

@@ -94,8 +94,10 @@ export const CONSONANTS_NORMAL = {
   N: 'n',
   NG: 'ng',
   P: 'p',
-  RR: 'r',
-  S: 's',
+  CRV: 'r',
+  VRV: 'r',
+  CS: 's',
+  VS: 's',
   SH: 'c',
   T: 't',
   TH: 'x',
@@ -103,7 +105,8 @@ export const CONSONANTS_NORMAL = {
   W: 'w',
   WH: 'wh',
   Y: 'j',
-  Z: 'z',
+  CZ: 'z',
+  VZ: 'z',
   ZH: 'jh'
 }
 
@@ -126,8 +129,10 @@ export const CONSONANTS_MACRON = {
   N: 'n',
   NG: 'ng',
   P: 'p',
-  RR: 'r',
-  S: 's',
+  CRV: 'r',
+  VRV: 'r',
+  CS: 's',
+  VS: 's',
   SH: 'c',
   T: 't',
   TH: 'x',
@@ -135,6 +140,7 @@ export const CONSONANTS_MACRON = {
   W: 'w',
   WH: 'wh',
   Y: 'j',
-  Z: 'z',
+  CZ: 'z',
+  VZ: 'z',
   ZH: 'ʒ'
 }
