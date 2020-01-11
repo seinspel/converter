@@ -1,4 +1,4 @@
-'use strict'
+import { LEXICALSETS, CONSONANTS } from './constants.mjs'
 
 const vowels = ['A', 'AH', 'AR', 'AW', 'EE', 'IER', 'EH', 'EIR', 'EW', 'EWR', 'EY',
     'AHY', 'ə', 'əR', 'IH', 'II', 'IRE', 'O', 'OA', 'OH', 'OIR', 'OO', 'OOR', 'OR',
@@ -17,7 +17,7 @@ const unambiguousBeforeR = ['B', 'CH', 'D', 'DH', 'F', 'G', 'J', 'K', 'L', 'M',
 /**
  * Assemble the spelling from the pronunciation
  */
-function assemble (phons, withStress, withMerger) {
+export function assemble (phons, withStress, withMerger) {
   let result = ''
   const numSyllables = countVowels(phons)
   for (let i = 0; i < phons.length; i++) {

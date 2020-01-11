@@ -1,6 +1,4 @@
-'use strict'
-
-const ASCIIDECOMPRESSION = {
+export const ASCIIDECOMPRESSION = {
   '!': 'A0',
   '#': 'A1',
   '$': 'AH0',

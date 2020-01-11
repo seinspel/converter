@@ -1,23 +1,10 @@
-'use strict'
+import { assemble } from './assemble.mjs'
+import * as constants from './constants.mjs'
+import { ASCIIDECOMPRESSION } from './asciidecompression.mjs'
 
 var dict = {}
-var LEXICALSETS = {}
-var CONSONANTS = {}
 
-function prepare () {
-  // set handler for 'convert' button
-  const clickButton = document.getElementById('clickbutton')
-  clickButton.addEventListener('click', process, false)
-  document.getElementById('testcases').addEventListener('click', tests, false)
-
-  // download dictionary
-  const oReq = new XMLHttpRequest()
-  oReq.addEventListener('load', loadDict)
-  oReq.open('GET', './data/dictionary.json')
-  oReq.send()
-}
-
-function loadDict () {
+export function loadDict () {
   dict = JSON.parse(this.responseText)
 }
 
@@ -44,19 +31,20 @@ function decodePhonemes (letters) {
   return phons
 }
 
-function process () {
+export function process () {
   const text = document.getElementById('input').value
   const withMerger = document.getElementById('withMerger').checked
   const withStress = document.getElementById('withStress').checked
   const withMacrons = document.getElementById('withMacrons').checked
   if (withMacrons) {
-    LEXICALSETS = LEXICALSETS_MACRON
-    CONSONANTS = CONSONANTS_MACRON
+    constants.setSpelling(constants.LEXICALSETS_MACRON,
+                          constants.CONSONANTS_MACRON)
   } else if (withStress) {
-    LEXICALSETS = LEXICALSETS_NORMAL
-    CONSONANTS = CONSONANTS_NORMAL
+    constants.setSpelling(constants.LEXICALSETS_NORMAL,
+                          constants.CONSONANTS_NORMAL)
   } else {
-    [LEXICALSETS, CONSONANTS] = loadSpelling()
+    const [lexicalSets, consonants] = loadSpelling()
+    constants.setSpelling(lexicalSets, consonants)
   }
   const result = convertText(text, withStress, withMerger)
   const output = document.getElementById('output')
@@ -264,7 +252,7 @@ function convertText (text, withStress, withMerger) {
   return result
 }
 
-function tests () {
+export function tests () {
   const inputField = document.getElementById('input')
   inputField.value = `Foreskin SEEING dying saying behalf suing teriyaki
 evacuate boyhood adhere bloodshed midyear knowing away short awestruck withhold

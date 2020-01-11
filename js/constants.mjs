@@ -1,9 +1,15 @@
-'use strict'
+export var LEXICALSETS = {}
+export var CONSONANTS = {}
+
+export function setSpelling (lexicalSets, consonants) {
+  LEXICALSETS = lexicalSets
+  CONSONANTS = consonants
+}
 
 // use like this (define an array with 2 entries for each set):
 // const stress = stressed ? 0 : 1
 // lexicalSets.DRESS[stress]
-const LEXICALSETS_NORMAL = {
+export const LEXICALSETS_NORMAL = {
   KIT: ['í', 'i'],
   DRESS: ['é', 'e'],
   TRAP: ['á', 'a'],
@@ -36,7 +42,7 @@ const LEXICALSETS_NORMAL = {
   commA: 'e'
 }
 
-const LEXICALSETS_MACRON = {
+export const LEXICALSETS_MACRON = {
   KIT: ['í', 'i'],
   DRESS: ['é', 'e'],
   TRAP: ['á', 'a'],
@@ -69,7 +75,7 @@ const LEXICALSETS_MACRON = {
   commA: 'e'
 }
 
-const CONSONANTS_NORMAL = {
+export const CONSONANTS_NORMAL = {
   B: 'b',
   CH: 'tc',
   D: 'd',
@@ -101,7 +107,7 @@ const CONSONANTS_NORMAL = {
   ZH: 'jh'
 }
 
-const CONSONANTS_MACRON = {
+export const CONSONANTS_MACRON = {
   B: 'b',
   CH: 'tc',
   D: 'd',
