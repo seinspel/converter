@@ -1,8 +1,8 @@
 import { LEXICALSETS, CONSONANTS } from './constants.mjs'
 
-const vowels = ['A', 'AH', 'AR', 'AW', 'EE', 'IER', 'EH', 'EIR', 'EW', 'EWR', 'EY',
-    'AHY', 'ə', 'əR', 'IH', 'II', 'IRE', 'O', 'OA', 'OH', 'OIR', 'OO', 'OOR', 'OR',
-    'OW', 'OWR', 'OY', 'UH', 'UR', 'U']
+const vowels = ['A', 'AH', 'AHY', 'AR', 'AW', 'EE', 'EH', 'EIR', 'EW', 'EWR', 'EY',
+                'IA', 'IER', 'IH', 'II', 'IRE', 'O', 'OA', 'OH', 'OIR', 'OO', 'OOR',
+                'OR', 'OW', 'OWR', 'OY', 'U', 'UH', 'UR', 'ə', 'əR']
 // these consonants cannot be pronounced immediately before an L
 // (counterexample: R (curl))
 const unambiguousBeforeL = ['B', 'CH', 'D', 'DH', 'F', 'G', 'J', 'K', 'P', 'S',
@@ -107,6 +107,8 @@ function convertSymbol (symbol, behind, ahead1, numSyllables, withStress,
         return consonants.ER
       }
       return lexicalSets.lettER
+    case 'IA':
+      return lexicalSets.IAN[stress]
     case 'IER':
       return lexicalSets.NEAR[stress]
     case 'IH':

@@ -37,6 +37,7 @@ export const LEXICALSETS_NORMAL = {
   FIRE: ['áir', 'air'],
   FLOUR: ['áur', 'aur'],
   COIR: ['óir', 'oir'],
+  IAN: ['íie', 'iie'],
   happY: 'i',
   lettER: 'ur',
   commA: 'e'
@@ -70,6 +71,7 @@ export const LEXICALSETS_MACRON = {
   FIRE: ['áir', 'air'],
   FLOUR: ['áur', 'aur'],
   COIR: ['óir', 'oir'],
+  IAN: ['īe', 'īe'],
   happY: 'i',
   lettER: 'ur',
   commA: 'e'

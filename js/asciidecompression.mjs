@@ -84,5 +84,7 @@ export const ASCIIDECOMPRESSION = {
   '{': 'EM',
   '|': 'EN',
   '}': 'II',
-  '\'': '\'',
+  '[': 'IA0',
+  ']': 'IA1',
+  '\'': '\''
 }

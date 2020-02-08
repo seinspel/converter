@@ -83,6 +83,7 @@ function loadSpelling () {
     FIRE: ['', document.getElementById('fire-vowel').value],
     FLOUR: ['', document.getElementById('flour-vowel').value],
     COIR: ['', document.getElementById('coir-vowel').value],
+    IAN: ['', document.getElementById('ian-vowel').value],
     happY: document.getElementById('happy-vowel').value,
     lettER: document.getElementById('letter-vowel').value,
     commA: document.getElementById('comma-vowel').value
