@@ -17,7 +17,7 @@ export const LEXICALSETS_NORMAL = {
   STRUT: ['ý', 'y'],
   FOOT: ['ú', 'u'],
   CLOTH: ['ó', 'o'],
-  NURSE: ['úr', 'ur'],
+  NURSE: ['ýr', 'yr'],
   FLEECE: ['íi', 'ii'],
   FACE: ['éi', 'ei'],
   PALM: ['áa', 'aa'],
@@ -28,18 +28,18 @@ export const LEXICALSETS_NORMAL = {
   CHOICE: ['ói', 'oi'],
   MOUTH: ['áu', 'au'],
   CUTE: ['éu', 'eu'],
-  NEAR: ['íir', 'iir'],
-  SQUARE: ['éir', 'eir'],
-  START: ['áar', 'aar'],
-  NORTH: ['óor', 'oor'],
-  POOR: ['úur', 'uur'],
-  CURE: ['éur', 'eur'],
+  NEAR: ['ír', 'ir'],
+  SQUARE: ['ér', 'er'],
+  START: ['ár', 'ar'],
+  NORTH: ['ór', 'or'],
+  POOR: ['úr', 'ur'],
+  CURE: ['íur', 'iur'],
   FIRE: ['áir', 'air'],
   FLOUR: ['áur', 'aur'],
   COIR: ['óir', 'oir'],
-  IAN: ['íie', 'iie'],
+  IAN: ['ía', 'ia'],
   happY: 'i',
-  lettER: 'ur',
+  lettER: 'yr',
   commA: 'e'
 }
 
@@ -97,7 +97,7 @@ export const CONSONANTS_NORMAL = {
   NG: 'ng',
   P: 'p',
   CRV: 'r',
-  VRV: 'r',
+  VRV: 'rr',
   CS: 's',
   VS: 's',
   SH: 'c',
@@ -106,10 +106,10 @@ export const CONSONANTS_NORMAL = {
   V: 'v',
   W: 'w',
   WH: 'wh',
-  Y: 'j',
+  Y: 'y',
   CZ: 'z',
   VZ: 'z',
-  ZH: 'jh'
+  ZH: 'j'
 }
 
 export const CONSONANTS_MACRON = {
