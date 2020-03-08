@@ -27,7 +27,7 @@ export const LEXICALSETS_NORMAL = {
   PRICE: ['ái', 'ai'],
   CHOICE: ['ói', 'oi'],
   MOUTH: ['áu', 'au'],
-  CUTE: ['éu', 'eu'],
+  CUTE: ['íu', 'iu'],
   NEAR: ['ír', 'ir'],
   SQUARE: ['ér', 'er'],
   START: ['ár', 'ar'],
