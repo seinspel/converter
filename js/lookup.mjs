@@ -118,11 +118,97 @@ function loadSpelling () {
     W: document.getElementById('w-consonant').value,
     WH: document.getElementById('wh-consonant').value,
     Y: document.getElementById('y-consonant').value,
-    CZ: document.getElementById('cz-consonant').value,
-    VZ: document.getElementById('vz-consonant').value,
+    ZC: document.getElementById('zc-consonant').value,
+    ZV: document.getElementById('zv-consonant').value,
     ZH: document.getElementById('zh-consonant').value
   }
   return [vowels, consonants]
+}
+
+export function setPreset(preset) {
+  let vowels, consonants
+  if (preset === "european") {
+    vowels = constants.LEXICALSETS_EUROPEAN
+    consonants = constants.CONSONANTS_EUROPEAN
+  } else if (preset === "asian") {
+    vowels = constants.LEXICALSETS_ASIAN
+    consonants = constants.CONSONANTS_ASIAN
+  } else if (preset === "english") {
+    vowels = constants.LEXICALSETS_ENGLISH
+    consonants = constants.CONSONANTS_ENGLISH
+  }
+  writeSpelling(vowels, consonants)
+}
+
+/**
+ * Write spelling to the text inputs
+ */
+function writeSpelling(vowels, consonants) {
+  // vowels
+  document.getElementById('kit-vowel').value = vowels.KIT[1]
+  document.getElementById('dress-vowel').value = vowels.DRESS[1]
+  document.getElementById('trap-vowel').value = vowels.TRAP[1]
+  document.getElementById('lot-vowel').value = vowels.LOT[1]
+  document.getElementById('strut-vowel').value = vowels.STRUT[1]
+  document.getElementById('foot-vowel').value = vowels.FOOT[1]
+  document.getElementById('cloth-vowel').value = vowels.CLOTH[1]
+  document.getElementById('nurse-vowel').value = vowels.NURSE[1]
+  document.getElementById('fleece-vowel').value = vowels.FLEECE[1]
+  document.getElementById('face-vowel').value = vowels.FACE[1]
+  document.getElementById('palm-vowel').value = vowels.PALM[1]
+  document.getElementById('thought-vowel').value = vowels.THOUGHT[1]
+  document.getElementById('goat-vowel').value = vowels.GOAT[1]
+  document.getElementById('goose-vowel').value = vowels.GOOSE[1]
+  document.getElementById('price-vowel').value = vowels.PRICE[1]
+  document.getElementById('choice-vowel').value = vowels.CHOICE[1]
+  document.getElementById('mouth-vowel').value = vowels.MOUTH[1]
+  document.getElementById('cute-vowel').value = vowels.CUTE[1]
+  document.getElementById('near-vowel').value = vowels.NEAR[1]
+  document.getElementById('square-vowel').value = vowels.SQUARE[1]
+  document.getElementById('start-vowel').value = vowels.START[1]
+  document.getElementById('north-vowel').value = vowels.NORTH[1]
+  document.getElementById('poor-vowel').value = vowels.POOR[1]
+  document.getElementById('cure-vowel').value = vowels.CURE[1]
+  document.getElementById('fire-vowel').value = vowels.FIRE[1]
+  document.getElementById('flour-vowel').value = vowels.FLOUR[1]
+  document.getElementById('coir-vowel').value = vowels.COIR[1]
+  document.getElementById('ian-vowel').value = vowels.IAN[1]
+  document.getElementById('happy-vowel').value = vowels.happY
+  document.getElementById('letter-vowel').value = vowels.lettER
+  document.getElementById('comma-vowel').value = vowels.commA
+  // consonants
+  document.getElementById('b-consonant').value = consonants.B
+  document.getElementById('ch-consonant').value = consonants.CH
+  document.getElementById('d-consonant').value = consonants.D
+  document.getElementById('dh-consonant').value = consonants.DH
+  document.getElementById('el-consonant').value = consonants.EL
+  document.getElementById('em-consonant').value = consonants.EM
+  document.getElementById('en-consonant').value = consonants.EN
+  document.getElementById('er-consonant').value = consonants.ER
+  document.getElementById('f-consonant').value = consonants.F
+  document.getElementById('g-consonant').value = consonants.G
+  document.getElementById('h-consonant').value = consonants.HH
+  document.getElementById('j-consonant').value = consonants.J
+  document.getElementById('k-consonant').value = consonants.K
+  document.getElementById('l-consonant').value = consonants.L
+  document.getElementById('m-consonant').value = consonants.M
+  document.getElementById('n-consonant').value = consonants.N
+  document.getElementById('ng-consonant').value = consonants.NG
+  document.getElementById('p-consonant').value = consonants.P
+  document.getElementById('crv-consonant').value = consonants.CRV
+  document.getElementById('vrv-consonant').value = consonants.VRV
+  document.getElementById('cs-consonant').value = consonants.CS
+  document.getElementById('vs-consonant').value = consonants.VS
+  document.getElementById('sh-consonant').value = consonants.SH
+  document.getElementById('t-consonant').value = consonants.T
+  document.getElementById('th-consonant').value = consonants.TH
+  document.getElementById('v-consonant').value = consonants.V
+  document.getElementById('w-consonant').value = consonants.W
+  document.getElementById('wh-consonant').value = consonants.WH
+  document.getElementById('y-consonant').value = consonants.Y
+  document.getElementById('zc-consonant').value = consonants.ZC
+  document.getElementById('zv-consonant').value = consonants.ZV
+  document.getElementById('zh-consonant').value = consonants.ZH
 }
 
 function figureOutCapitalization (original, converted) {
@@ -212,7 +298,7 @@ function findBaseForm (chunk) {
  * Convert a text in normal English to new English
  */
 function convertText (text, withStress, withMerger) {
-  const chunks = text.split(/([^a-zA-Z'])/)
+  const chunks = text.replace(/’/gi, "'").split(/([^a-zA-Z'])/)
   console.log(chunks)
   let result = ''
   for (const chunk of chunks) {

@@ -186,16 +186,18 @@ function convertSymbol (symbol, behind, ahead1, numSyllables, withStress,
         return consonants.VRV
       }
     case 'S':
-      if (behind === undefined || countVowels([behind]) === 0) {
+      if ((behind === undefined || countVowels([behind]) === 0) || (ahead1 && countVowels([ahead1]) === 0)) {
+        // not preceded by a vowel or followed by a consonant
         return consonants.CS
       } else {
-        return consonants.VS
+        return consonants.VS // ss
       }
     case 'Z':
-      if (behind === undefined || countVowels([behind]) === 0) {
-        return consonants.CZ
+      if ((behind === undefined || countVowels([behind]) === 0) && (ahead1 && countVowels([ahead1]) === 1)) {
+        // not preceded by a vowel and followed by a vowel
+        return consonants.ZV
       } else {
-        return consonants.VZ
+        return consonants.ZC
       }
     case 'B':
     case 'CH':
