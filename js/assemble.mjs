@@ -1,8 +1,8 @@
 import { LEXICALSETS, CONSONANTS } from './constants.mjs'
 
 const vowels = ['A', 'AH', 'AHY', 'AR', 'AW', 'EE', 'EH', 'EIR', 'EW', 'EWR', 'EY',
-                'IA', 'IER', 'IH', 'II', 'IRE', 'O', 'OA', 'OH', 'OIR', 'OO', 'OOR',
-                'OR', 'OW', 'OWR', 'OY', 'U', 'UH', 'UR', 'ə', 'əR']
+  'IA', 'IER', 'IH', 'II', 'IRE', 'O', 'OA', 'OH', 'OIR', 'OO', 'OOR',
+  'OR', 'OW', 'OWR', 'OY', 'U', 'UH', 'UR', 'ə', 'əR']
 // these consonants cannot be pronounced immediately before an L
 // (counterexample: R (curl))
 const unambiguousBeforeL = ['B', 'CH', 'D', 'DH', 'F', 'G', 'J', 'K', 'P', 'S',
@@ -55,7 +55,7 @@ export function assemble (phons, withStress, withMerger, longToShort) {
       }
     }
     let newLetters = convertSymbol(symbolNoS, behind, ahead1, stress,
-                                     withMerger, reduplicate)
+      withMerger, reduplicate)
     if (newLetters === undefined) {
       newLetters = symbol
     }
@@ -100,7 +100,7 @@ function isVowel (phon) {
  * Convert a pronunciation symbol into letters for the spelling
  */
 function convertSymbol (symbolNoS, behind, ahead1, stress, withMerger,
-                        reduplicate) {
+  reduplicate) {
   const lexicalSets = LEXICALSETS
   const consonants = CONSONANTS
   switch (symbolNoS) {
@@ -115,7 +115,7 @@ function convertSymbol (symbolNoS, behind, ahead1, stress, withMerger,
       return lexicalSets.START[stress]
     case 'AW':
       if (withMerger) {
-        if (ahead1 == 'RR') {
+        if (ahead1 === 'RR') {
           return lexicalSets.THOUGHT[stress]
         } else {
           return lexicalSets.PALM[stress]
@@ -154,7 +154,7 @@ function convertSymbol (symbolNoS, behind, ahead1, stress, withMerger,
       return lexicalSets.FIRE[stress]
     case 'O':
       if (withMerger) {
-        if (ahead1 == 'RR') {
+        if (ahead1 === 'RR') {
           return lexicalSets.THOUGHT[stress]
         } else {
           return lexicalSets.PALM[stress]
@@ -270,13 +270,13 @@ function convertSymbol (symbolNoS, behind, ahead1, stress, withMerger,
  */
 function isOpenSyllable (ahead1, ahead2) {
   if (ahead1 === undefined || isVowel(ahead1) || ahead1 === '\'') {
-    return true  // vowel is followed by other vowel or end of word
-  } else{
+    return true // vowel is followed by other vowel or end of word
+  } else {
     // ahead1 is a consonant
     if (ahead2 === undefined || ahead2 === '\'') {
-      return false  // vowel is followed by just a consonant and then ends
+      return false // vowel is followed by just a consonant and then ends
     } else if (isVowel(ahead2) && !['EW', 'EWR'].includes(ahead2.slice(0, -1))) {
-      return true  // vowel is followed by consonant and then vowel
+      return true // vowel is followed by consonant and then vowel
     } else {
       // both ahead1 and ahead2 are consonants
       // it's not completely correct

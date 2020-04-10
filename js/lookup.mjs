@@ -39,10 +39,10 @@ export function process () {
   const longToShort = document.getElementById('longToShort').checked
   if (withMacrons) {
     constants.setSpelling(constants.LEXICALSETS_MACRON,
-                          constants.CONSONANTS_MACRON)
+      constants.CONSONANTS_MACRON)
   } else if (withStress) {
     constants.setSpelling(constants.LEXICALSETS_EUROPEAN,
-                          constants.CONSONANTS_EUROPEAN)
+      constants.CONSONANTS_EUROPEAN)
   } else {
     const [lexicalSets, consonants] = loadSpelling()
     constants.setSpelling(lexicalSets, consonants)
@@ -126,15 +126,15 @@ function loadSpelling () {
   return [vowels, consonants]
 }
 
-export function setPreset(preset) {
+export function setPreset (preset) {
   let vowels, consonants
-  if (preset === "european") {
+  if (preset === 'european') {
     vowels = constants.LEXICALSETS_EUROPEAN
     consonants = constants.CONSONANTS_EUROPEAN
-  } else if (preset === "asian") {
+  } else if (preset === 'asian') {
     vowels = constants.LEXICALSETS_ASIAN
     consonants = constants.CONSONANTS_ASIAN
-  } else if (preset === "english") {
+  } else if (preset === 'english') {
     vowels = constants.LEXICALSETS_ENGLISH
     consonants = constants.CONSONANTS_ENGLISH
   }
@@ -144,7 +144,7 @@ export function setPreset(preset) {
 /**
  * Write spelling to the text inputs
  */
-function writeSpelling(vowels, consonants) {
+function writeSpelling (vowels, consonants) {
   // vowels
   document.getElementById('kit-vowel').value = vowels.KIT[1]
   document.getElementById('dress-vowel').value = vowels.DRESS[1]
@@ -215,7 +215,7 @@ function writeSpelling(vowels, consonants) {
 function figureOutCapitalization (original, converted) {
   if (original === 'I') { // special case
     return converted
-  } else if (original.toUpperCase() === original && original.toUpperCase() !== "A") {
+  } else if (original.toUpperCase() === original && original.toUpperCase() !== 'A') {
     // all caps
     return converted.toUpperCase()
   } else if (original[0] === "'") {
