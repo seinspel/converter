@@ -36,17 +36,18 @@ export function process () {
   const withMerger = document.getElementById('withMerger').checked
   const withStress = document.getElementById('withStress').checked
   const withMacrons = document.getElementById('withMacrons').checked
+  const longToShort = document.getElementById('longToShort').checked
   if (withMacrons) {
     constants.setSpelling(constants.LEXICALSETS_MACRON,
                           constants.CONSONANTS_MACRON)
   } else if (withStress) {
-    constants.setSpelling(constants.LEXICALSETS_NORMAL,
-                          constants.CONSONANTS_NORMAL)
+    constants.setSpelling(constants.LEXICALSETS_EUROPEAN,
+                          constants.CONSONANTS_EUROPEAN)
   } else {
     const [lexicalSets, consonants] = loadSpelling()
     constants.setSpelling(lexicalSets, consonants)
   }
-  const result = convertText(text, withStress, withMerger)
+  const result = convertText(text, withStress, withMerger, longToShort)
   const output = document.getElementById('output')
   output.value = result
 }
@@ -297,7 +298,7 @@ function findBaseForm (chunk) {
 /**
  * Convert a text in normal English to new English
  */
-function convertText (text, withStress, withMerger) {
+function convertText (text, withStress, withMerger, longToShort) {
   const chunks = text.replace(/’/gi, "'").split(/([^a-zA-Z'])/)
   console.log(chunks)
   let result = ''
@@ -330,7 +331,7 @@ function convertText (text, withStress, withMerger) {
     const allConverted = []
     for (const variant of lookupResults) {
       const phons = decodePhonemes(variant)
-      const converted = assemble(phons, withStress, withMerger)
+      const converted = assemble(phons, withStress, withMerger, longToShort)
       allConverted.push(figureOutCapitalization(chunk, converted))
     }
     if (allConverted.length === 1) {

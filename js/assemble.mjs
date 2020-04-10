@@ -14,17 +14,51 @@ const unambiguousBeforeN = ['B', 'CH', 'D', 'DH', 'F', 'G', 'J', 'K', 'P', 'S',
 const unambiguousBeforeR = ['B', 'CH', 'D', 'DH', 'F', 'G', 'J', 'K', 'L', 'M',
   'N', 'NG', 'P', 'S', 'SH', 'T', 'TH', 'V', 'Z', 'ZH']
 
+const longToShortMap = {
+  'AH': 'A',
+  'EY': 'EH',
+  'EE': 'IH',
+  'OH': 'O',
+  'OO': 'U'
+}
+
 /**
  * Assemble the spelling from the pronunciation
  */
-export function assemble (phons, withStress, withMerger) {
+export function assemble (phons, withStress, withMerger, longToShort) {
   let result = ''
+  let reduplicateNext = false
   const numSyllables = countVowels(phons)
   for (let i = 0; i < phons.length; i++) {
+    const reduplicate = reduplicateNext
+    reduplicateNext = false // reset
+
+    const symbol = phons[i]
+    const ahead1 = phons[i + 1]
+    const ahead2 = phons[i + 2]
     // if the previous symbol is the apostrophe, then use the one before that
     const behind = phons[i - 1] === '\'' ? phons[i - 2] : phons[i - 1]
-    const newLetters = convertSymbol(phons[i], behind, phons[i + 1],
-      numSyllables, withStress, withMerger)
+    const hasPrimary = (symbol.slice(-1) === '1')
+    const hasStressMarker = ['0', '1', '2'].includes(symbol.slice(-1))
+    let symbolNoS = hasStressMarker ? symbol.slice(0, -1) : symbol
+    const stress = (withStress && hasPrimary && numSyllables >= 2) ? 0 : 1
+
+    let toAppend = ''
+    if (longToShort && isOpenSyllable(ahead1, ahead2)) {
+      if (symbolNoS in longToShortMap) {
+        symbolNoS = longToShortMap[symbolNoS]
+        if (isVowel(ahead1)) {
+          toAppend += '\''
+        }
+      } else if (Object.values(longToShortMap).includes(symbolNoS)) {
+        reduplicateNext = true
+      }
+    }
+    let newLetters = convertSymbol(symbolNoS, behind, ahead1, stress,
+                                     withMerger, reduplicate)
+    if (newLetters === undefined) {
+      newLetters = symbol
+    }
 
     // avoid ambiguities by inserting apostrophes when two times the same vowel
     // appears accross phoneme boundaries or when the combinations
@@ -38,7 +72,7 @@ export function assemble (phons, withStress, withMerger) {
       result += 'h'
     }
 
-    result += newLetters
+    result += newLetters + toAppend
   }
   return result
 }
@@ -46,26 +80,27 @@ export function assemble (phons, withStress, withMerger) {
 function countVowels (phons) {
   let numVowels = 0
   for (const phon of phons) {
-    if (phon && vowels.includes(phon.slice(0, -1))) {
-      numVowels++
-    } else if (phon && (phon === 'ə' || phon === 'əR' || phon === 'II')) {
+    if (isVowel(phon)) {
       numVowels++
     }
   }
   return numVowels
 }
 
+function isVowel (phon) {
+  if (phon && vowels.includes(phon.slice(0, -1))) {
+    return true
+  } else if (phon && (phon === 'ə' || phon === 'əR' || phon === 'II')) {
+    return true
+  }
+  return false
+}
+
 /**
  * Convert a pronunciation symbol into letters for the spelling
  */
-function convertSymbol (symbol, behind, ahead1, numSyllables, withStress,
-                        withMerger) {
-  const hasPrimary = (symbol.slice(-1) === '1')
-  // const hasSecondary = (symbol.slice(-1) === '2')
-  const hasStressMarker = ['0', '1', '2'].includes(symbol.slice(-1))
-  const symbolNoS = hasStressMarker ? symbol.slice(0, -1) : symbol
-  // const ahead1NoS = ahead1 ? ahead1.substr(0, 2) : ''
-  const stress = (withStress && hasPrimary && numSyllables >= 2) ? 0 : 1
+function convertSymbol (symbolNoS, behind, ahead1, stress, withMerger,
+                        reduplicate) {
   const lexicalSets = LEXICALSETS
   const consonants = CONSONANTS
   switch (symbolNoS) {
@@ -180,20 +215,20 @@ function convertSymbol (symbol, behind, ahead1, numSyllables, withStress,
       }
       return consonants.NG
     case 'RR':
-      if (behind === undefined || countVowels([behind]) === 0) {
+      if (behind === undefined || !isVowel(behind)) {
         return consonants.CRV
       } else {
         return consonants.VRV
       }
     case 'S':
-      if ((behind === undefined || countVowels([behind]) === 0) || (ahead1 && countVowels([ahead1]) === 0)) {
+      if ((behind === undefined || !isVowel(behind)) || (ahead1 && !isVowel(ahead1))) {
         // not preceded by a vowel or followed by a consonant
         return consonants.CS
       } else {
         return consonants.VS // ss
       }
     case 'Z':
-      if ((behind === undefined || countVowels([behind]) === 0) && (ahead1 && countVowels([ahead1]) === 1)) {
+      if ((behind === undefined || !isVowel(behind)) && (ahead1 && isVowel(ahead1))) {
         // not preceded by a vowel and followed by a vowel
         return consonants.ZV
       } else {
@@ -220,8 +255,34 @@ function convertSymbol (symbol, behind, ahead1, numSyllables, withStress,
     case 'WH':
     case 'Y':
     case 'ZH':
-      return consonants[symbolNoS]
+      const letters = consonants[symbolNoS]
+      if (reduplicate) {
+        return letters[0] + letters
+      }
+      return letters
     default:
-      return symbol
+      return undefined
+  }
+}
+
+/**
+ * Try to find out if the given vowel belongs to an open syllable.
+ */
+function isOpenSyllable (ahead1, ahead2) {
+  if (ahead1 === undefined || isVowel(ahead1) || ahead1 === '\'') {
+    return true  // vowel is followed by other vowel or end of word
+  } else{
+    // ahead1 is a consonant
+    if (ahead2 === undefined || ahead2 === '\'') {
+      return false  // vowel is followed by just a consonant and then ends
+    } else if (isVowel(ahead2) && !['EW', 'EWR'].includes(ahead2.slice(0, -1))) {
+      return true  // vowel is followed by consonant and then vowel
+    } else {
+      // both ahead1 and ahead2 are consonants
+      // it's not completely correct
+      // (because of compound words like free+climbing)
+      // but we treat this case as being a closed syllable
+      return false
+    }
   }
 }
