@@ -110,8 +110,8 @@ function loadSpelling () {
     P: document.getElementById('p-consonant').value,
     CRV: document.getElementById('crv-consonant').value,
     VRV: document.getElementById('vrv-consonant').value,
-    CS: document.getElementById('cs-consonant').value,
-    VS: document.getElementById('vs-consonant').value,
+    CS: document.getElementById('s-consonant-un').value,
+    VS: document.getElementById('s-consonant-am').value,
     SH: document.getElementById('sh-consonant').value,
     T: document.getElementById('t-consonant').value,
     TH: document.getElementById('th-consonant').value,
@@ -119,8 +119,8 @@ function loadSpelling () {
     W: document.getElementById('w-consonant').value,
     WH: document.getElementById('wh-consonant').value,
     Y: document.getElementById('y-consonant').value,
-    ZC: document.getElementById('zc-consonant').value,
-    ZV: document.getElementById('zv-consonant').value,
+    ZC: document.getElementById('z-consonant-un').value,
+    ZV: document.getElementById('z-consonant-am').value,
     ZH: document.getElementById('zh-consonant').value
   }
   return [vowels, consonants]
@@ -198,8 +198,8 @@ function writeSpelling (vowels, consonants) {
   document.getElementById('p-consonant').value = consonants.P
   document.getElementById('crv-consonant').value = consonants.CRV
   document.getElementById('vrv-consonant').value = consonants.VRV
-  document.getElementById('cs-consonant').value = consonants.CS
-  document.getElementById('vs-consonant').value = consonants.VS
+  document.getElementById('s-consonant-un').value = consonants.CS
+  document.getElementById('s-consonant-am').value = consonants.VS
   document.getElementById('sh-consonant').value = consonants.SH
   document.getElementById('t-consonant').value = consonants.T
   document.getElementById('th-consonant').value = consonants.TH
@@ -207,8 +207,8 @@ function writeSpelling (vowels, consonants) {
   document.getElementById('w-consonant').value = consonants.W
   document.getElementById('wh-consonant').value = consonants.WH
   document.getElementById('y-consonant').value = consonants.Y
-  document.getElementById('zc-consonant').value = consonants.ZC
-  document.getElementById('zv-consonant').value = consonants.ZV
+  document.getElementById('z-consonant-un').value = consonants.ZC
+  document.getElementById('z-consonant-am').value = consonants.ZV
   document.getElementById('zh-consonant').value = consonants.ZH
 }
 

@@ -19,7 +19,8 @@ const longToShortMap = {
   'EY': 'EH',
   'EE': 'IH',
   'OH': 'O',
-  'OO': 'U'
+  'OO': 'U',
+  'ə': 'A'
 }
 
 /**
@@ -29,6 +30,23 @@ export function assemble (phons, withStress, withMerger, longToShort) {
   let result = ''
   let reduplicateNext = false
   const numSyllables = countVowels(phons)
+
+  if (longToShort) {
+    let newPhons = []
+    for (let i = 0; i < phons.length; i++) {
+      const symbol = phons[i]
+      // replace the IA symbol with IH + ə,
+      // so that the right representation of ə can be chosen
+      if (symbol.slice(0, -1) === 'IA') {
+        newPhons.push('IH' + symbol.slice(-1))
+        newPhons.push('ə')
+      } else {
+        newPhons.push(symbol)
+      }
+    }
+    phons = newPhons
+  }
+
   for (let i = 0; i < phons.length; i++) {
     const reduplicate = reduplicateNext
     reduplicateNext = false // reset
@@ -221,16 +239,16 @@ function convertSymbol (symbolNoS, behind, ahead1, stress, withMerger,
         return consonants.VRV
       }
     case 'S':
-      if ((behind === undefined || !isVowel(behind)) || (ahead1 && !isVowel(ahead1))) {
-        // not preceded by a vowel or followed by a consonant
-        return consonants.CS
-      } else {
+      if ((behind !== undefined && ahead1 === undefined) || (isVowel(behind) && isVowel(ahead1))) {
+        // s sound is ambiguous in this position
         return consonants.VS // ss
+      } else {
+        return consonants.CS
       }
     case 'Z':
-      if ((behind === undefined || !isVowel(behind)) && (ahead1 && isVowel(ahead1))) {
-        // not preceded by a vowel and followed by a vowel
-        return consonants.ZV
+      if ((isVowel(ahead1) && !isVowel(behind)) || (isVowel(behind) && ahead1 && !isVowel(ahead1))) {
+        // z sound is ambiguous in this position
+        return consonants.ZV // z
       } else {
         return consonants.ZC
       }
