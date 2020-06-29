@@ -23,6 +23,8 @@ const longToShortMap = {
   'ə': 'A'
 }
 
+const shortVowels = ['A', 'EH', 'IH', 'O', 'OA', 'U', 'UH']
+
 /**
  * Assemble the spelling from the pronunciation
  */
@@ -68,7 +70,7 @@ export function assemble (phons, withStress, withMerger, longToShort) {
         if (isVowel(ahead1)) {
           toAppend += '\''
         }
-      } else if (Object.values(longToShortMap).includes(symbolNoS)) {
+      } else if (shortVowels.includes(symbolNoS)) {
         reduplicateNext = true
       }
     }
