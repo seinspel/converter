@@ -1,4 +1,5 @@
-export const ASCIIDECOMPRESSION = {
+let asciiDecompression: Js.Dict.t<string> = %raw(
+  `{
   '!': 'A0',
   '#': 'A1',
   '$': 'AH0',
@@ -87,4 +88,5 @@ export const ASCIIDECOMPRESSION = {
   '[': 'IA0',
   ']': 'IA1',
   '\'': '\''
-}
+}`
+)
