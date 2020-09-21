@@ -36,8 +36,8 @@ let vowels = [
   "U",
   "UH",
   "UR",
-  "ə",
-  "əR",
+  `ə`,
+  `əR`,
 ]
 // these consonants cannot be pronounced immediately before an L
 // (counterexample: R (curl))
@@ -136,8 +136,8 @@ let isVowel = (phon: option<string>): bool =>
   | None => false
   | Some(phon) =>
     vowels->Js.Array2.includes(phon->Js.String2.slice(~from=0, ~to_=-1)) ||
-      (phon === "ə" ||
-      phon === "əR" ||
+      (phon === `ə` ||
+      phon === `əR` ||
       phon === "II")
   }
 
@@ -214,12 +214,6 @@ let convertSymbol = (
   | "EW" => lexicalSets.cute->maybeFst(stress)
   | "EWR" => lexicalSets.cure->maybeFst(stress)
   | "EY" => lexicalSets.face->maybeFst(stress)
-  | "ə" => lexicalSets.comma->Some
-  | "əR" =>
-    switch (ahead1, behind) {
-    | (None, Some(behind)) when unambiguousBeforeR->includes(behind) => consonants.er->Some
-    | _ => lexicalSets.letter->Some
-    }
   | "IA" => lexicalSets.ian->maybeFst(stress)
   | "IER" => lexicalSets.near->maybeFst(stress)
   | "IH" => lexicalSets.kit->maybeFst(stress)
@@ -314,7 +308,18 @@ let convertSymbol = (
   | "WH" => consonants.wh->maybeRedub
   | "Y" => consonants.y->maybeRedub
   | "ZH" => consonants.zh->maybeRedub
-  | _ => None
+  | _ =>
+    // we have to compare these manually because rescript doesn't like unicode
+    if symbolNoS == `ə` {
+      lexicalSets.comma->Some
+    } else if symbolNoS == `əR` {
+      switch (ahead1, behind) {
+      | (None, Some(behind)) when unambiguousBeforeR->includes(behind) => consonants.er->Some
+      | _ => lexicalSets.letter->Some
+      }
+    } else {
+      None
+    }
   }
 }
 
@@ -331,7 +336,7 @@ let assemble = (phons: array<string>, settings: conversionSettings): string => {
         // replace the IA symbol with IH + ə,
         // so that the right representation of ə can be chosen
         newPhons->Js.Array2.push("IH" ++ symbol->sliceToEnd(~from=-1))->ignore
-        newPhons->Js.Array2.push("ə")->ignore
+        newPhons->Js.Array2.push(`ə`)->ignore
       } else {
         newPhons->Js.Array2.push(symbol)->ignore
       }
