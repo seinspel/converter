@@ -1,3 +1,8 @@
+type globalDocument
+type domElement = {@bs.set "value": string, "checked": bool}
+@bs.send external getElementById: (globalDocument, string) => domElement = "getElementById"
+@bs.val external document: globalDocument = "document"
+
 type dictLookup<'a> = NoResult | Result('a)
 
 /* * [unsafeGet dict key] returns the value associated with [key] in [dict]
