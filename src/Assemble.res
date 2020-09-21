@@ -129,6 +129,8 @@ let longToShortMap: Js.Dict.t<string> = %raw(
 }`
 )
 
+let shortVowels = ["A", "EH", "IH", "O", "OA", "U", "UH"]
+
 let isVowel = (phon: option<string>): bool =>
   switch phon {
   | None => false
@@ -360,7 +362,7 @@ let assemble = (phons: array<string>, settings: conversionSettings): string => {
       switch longToShortMap->safeGetD(symbolNoS) {
       | Result(newSymbol) => (newSymbol, isVowel(ahead1) ? "'" : "")
       | _ => {
-          if longToShortMap->values->Js.Array2.includes(symbolNoS) {
+          if shortVowels->Js.Array2.includes(symbolNoS) {
             reduplicateNext := true
           }
           (symbolNoS, "")
