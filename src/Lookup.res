@@ -265,16 +265,3 @@ evacuate boyhood adhere bloodshed midyear knowing away short awestruck withhold
 adulthood malevolent criminal fewer lure neurology careless what's think
 nighttime Mary merry marry mirror nearer hurry furry horror lore`
 }
-
-Js.log(
-  convertText(
-    "First second reading.",
-    {
-      withStress: false,
-      withMerger: false,
-      longToShort: true,
-      lexicalSets: Constants.lexicalSetsEuropean,
-      consonants: Constants.consonantsEuropean,
-    },
-  ),
-)
