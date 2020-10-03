@@ -1,5 +1,5 @@
-import * as lookup from './Lookup.bs.js'
-import * as controller from './Controller.bs.js'
+import * as lookup from './lib/es6/src/Lookup.bs.js'
+import * as controller from './lib/es6/src/Controller.bs.js'
 
 // set handlers for buttons
 document.getElementById('clickbutton').addEventListener('click', lookup.processText, false)

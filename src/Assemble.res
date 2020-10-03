@@ -4,6 +4,8 @@ type conversionSettings = {
   withStress: bool,
   withMerger: bool,
   longToShort: bool,
+  lexicalSets: Constants.lexicalSetsType,
+  consonants: Constants.consonantsType,
 }
 
 let vowels = [
@@ -177,14 +179,14 @@ let maybeFst = (tuple: (string, string), takeFst: bool): option<string> => {
  * Convert a pronunciation symbol into letters for the spelling
  */
 let convertSymbol = (
-  symbolNoS: string,
-  behind: option<string>,
-  ahead1: option<string>,
-  stress: bool,
-  withMerger: bool,
-  reduplicate: bool,
-  lexicalSets: Constants.lexicalSetsType,
-  consonants: Constants.consonantsType,
+  ~symbolNoS: string,
+  ~behind: option<string>,
+  ~ahead1: option<string>,
+  ~stress: bool,
+  ~withMerger: bool,
+  ~reduplicate: bool,
+  ~lexicalSets: Constants.lexicalSetsType,
+  ~consonants: Constants.consonantsType,
 ): option<string> => {
   open Js.Array2
   let maybeRedub = (letters: string) =>
@@ -323,22 +325,93 @@ let convertSymbol = (
   }
 }
 
+let processPhoneme = (
+  ~symbol: string,
+  ~behind: option<string>,
+  ~ahead1: option<string>,
+  ~ahead2: option<string>,
+  ~state: assembleState,
+  ~settings: conversionSettings,
+  ~withStress: bool,
+) => {
+  open Js.String2
+  let reduplicate = state.reduplicateNext
+  let reduplicateNext = ref(false) // reset
+
+  let hasPrimary = symbol->sliceToEnd(~from=-1) == "1"
+  let hasStressMarker = ["0", "1", "2"]->Js.Array2.includes(symbol->sliceToEnd(~from=-1))
+  let symbolNoS = hasStressMarker ? symbol->slice(~from=0, ~to_=-1) : symbol
+  let stress = withStress && hasPrimary
+
+  let (symbolNoS, toAppend) = if settings.longToShort && isOpenSyllable(ahead1, ahead2) {
+    switch longToShortMap->safeGetD(symbolNoS) {
+    | Result(newSymbol) => (newSymbol, isVowel(ahead1) ? "'" : "")
+    | _ => {
+        if shortVowels->Js.Array2.includes(symbolNoS) {
+          reduplicateNext := true
+        }
+        (symbolNoS, "")
+      }
+    }
+  } else {
+    (symbolNoS, "")
+  }
+
+  let newLetters = convertSymbol(
+    ~symbolNoS,
+    ~behind,
+    ~ahead1,
+    ~stress,
+    ~withMerger=settings.withMerger,
+    ~reduplicate,
+    ~lexicalSets=settings.lexicalSets,
+    ~consonants=settings.consonants,
+  )
+  let newLetters = unwrapS(newLetters, symbol)
+
+  // avoid ambiguities by inserting apostrophes when two times the same vowel
+  // appears across phoneme boundaries or when the combinations
+  // c+h or s+h appear
+  let lastOld = state.result->sliceToEnd(~from=-1)->safeGetS(0)
+  let firstNew = newLetters->safeGetS(0)
+  let separator = switch (lastOld, firstNew) {
+  | (Some(lastOld), Some(firstNew)) =>
+    if (
+      (`aeiouyáéíóúýāēīōū`->includes(lastOld) && lastOld == firstNew) ||
+        ((lastOld == "c" || lastOld == "s") && firstNew == "h")
+    ) {
+      "'"
+    } else if lastOld == "d" && firstNew == "j" {
+      "h"
+    } else {
+      ""
+    }
+  | _ => ""
+  }
+
+  let result = state.result ++ separator ++ newLetters ++ toAppend
+
+  {result: result, reduplicateNext: reduplicateNext.contents}
+}
+
 /**
  * Assemble the spelling from the pronunciation
  */
 let assemble = (phons: array<string>, settings: conversionSettings): string => {
+  open Js.Array2
   open Js.String2
   let initialState = {result: "", reduplicateNext: false}
   let numSyllables = countVowels(phons)
+  let withStress = settings.withStress && numSyllables >= 2
   let phons = if settings.longToShort {
-    phons->Js.Array2.reduce((newPhons, symbol) => {
-      if symbol->slice(~from=0, ~to_=-1) == "IA" {
+    phons->reduce((newPhons, symbol) => {
+      if symbol->Js.String2.slice(~from=0, ~to_=-1) == "IA" {
         // replace the IA symbol with IH + ə,
         // so that the right representation of ə can be chosen
-        newPhons->Js.Array2.push("IH" ++ symbol->sliceToEnd(~from=-1))->ignore
-        newPhons->Js.Array2.push(`ə`)->ignore
+        newPhons->push("IH" ++ symbol->sliceToEnd(~from=-1))->ignore
+        newPhons->push(`ə`)->ignore
       } else {
-        newPhons->Js.Array2.push(symbol)->ignore
+        newPhons->push(symbol)->ignore
       }
       newPhons
     }, [])
@@ -346,10 +419,7 @@ let assemble = (phons: array<string>, settings: conversionSettings): string => {
     phons
   }
 
-  let finalState = phons->Js.Array2.reducei((state, symbol, i) => {
-    let reduplicate = state.reduplicateNext
-    let reduplicateNext = ref(false) // reset
-
+  let finalState = phons->reducei((state, symbol, i) => {
     let ahead1: option<string> = phons->safeGet(i + 1)
     let ahead2: option<string> = phons->safeGet(i + 2)
     let behind1: option<string> = phons->safeGet(i - 1)
@@ -358,64 +428,7 @@ let assemble = (phons: array<string>, settings: conversionSettings): string => {
     | Some("'") => phons->safeGet(i - 2)
     | x => x
     }
-    let hasPrimary = symbol->sliceToEnd(~from=-1) == "1"
-    let hasStressMarker = ["0", "1", "2"]->Js.Array2.includes(symbol->sliceToEnd(~from=-1))
-    let symbolNoS = hasStressMarker ? symbol->slice(~from=0, ~to_=-1) : symbol
-    let stress = settings.withStress && hasPrimary && numSyllables >= 2
-
-    let (symbolNoS, toAppend) = if settings.longToShort && isOpenSyllable(ahead1, ahead2) {
-      switch longToShortMap->safeGetD(symbolNoS) {
-      | Result(newSymbol) => (newSymbol, isVowel(ahead1) ? "'" : "")
-      | _ => {
-          if shortVowels->Js.Array2.includes(symbolNoS) {
-            reduplicateNext := true
-          }
-          (symbolNoS, "")
-        }
-      }
-    } else {
-      (symbolNoS, "")
-    }
-
-    let newLetters = switch (Constants.lexicalSets.contents, Constants.consonants.contents) {
-    | (Some(lexicalSets), Some(consonants)) =>
-      convertSymbol(
-        symbolNoS,
-        behind,
-        ahead1,
-        stress,
-        settings.withMerger,
-        reduplicate,
-        lexicalSets,
-        consonants,
-      )
-    | _ => None
-    }
-    let newLetters = unwrapS(newLetters, symbol)
-
-    // avoid ambiguities by inserting apostrophes when two times the same vowel
-    // appears across phoneme boundaries or when the combinations
-    // c+h or s+h appear
-    let lastOld = state.result->sliceToEnd(~from=-1)->safeGetS(0)
-    let firstNew = newLetters->safeGetS(0)
-    let separator = switch (lastOld, firstNew) {
-    | (Some(lastOld), Some(firstNew)) =>
-      if (
-        ("aeiouyáéíóúýāēīōū"->includes(lastOld) && lastOld == firstNew) ||
-          ((lastOld == "c" || lastOld == "s") && firstNew == "h")
-      ) {
-        "'"
-      } else if lastOld == "d" && firstNew == "j" {
-        "h"
-      } else {
-        ""
-      }
-    | _ => ""
-    }
-
-    let result = state.result ++ separator ++ newLetters ++ toAppend
-
-    {result: result, reduplicateNext: reduplicateNext.contents}
+    processPhoneme(~symbol, ~behind, ~ahead1, ~ahead2, ~state, ~settings, ~withStress)
   }, initialState)
   finalState.result
 }

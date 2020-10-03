@@ -52,7 +52,6 @@ let decodePhonemes = (letters: string): array<string> => {
   Js.String2.castToArrayLike(letters)->Js.Array2.fromMap(x => asciiDecompression->unsafeGet(x))
 }
 
-
 let figureOutCapitalization = (original: string, converted: string): string => {
   open Js.String2
   if original == "I" {
@@ -237,17 +236,23 @@ let processText = () => {
   let withStress = (document->getElementById("withStress"))["checked"]
   let withMacrons = (document->getElementById("withMacrons"))["checked"]
   let longToShort = (document->getElementById("longToShort"))["checked"]
-  if withMacrons {
-    Constants.setSpelling(Constants.lexicalsetsMacron, Constants.consonantsMacron)
+  let (lexicalSets, consonants) = if withMacrons {
+    (Constants.lexicalsetsMacron, Constants.consonantsMacron)
   } else if withStress {
-    Constants.setSpelling(Constants.lexicalSetsEuropean, Constants.consonantsEuropean)
+    (Constants.lexicalSetsEuropean, Constants.consonantsEuropean)
   } else {
     let (lexicalSets, consonants) = Controller.loadSpelling()
-    Constants.setSpelling(lexicalSets, consonants)
+    (lexicalSets, consonants)
   }
   let result = convertText(
     text,
-    {withStress: withStress, withMerger: withMerger, longToShort: longToShort},
+    {
+      withStress: withStress,
+      withMerger: withMerger,
+      longToShort: longToShort,
+      lexicalSets: lexicalSets,
+      consonants: consonants,
+    },
   )
   let output = document->getElementById("output")
   output["value"] = result
@@ -261,7 +266,15 @@ adulthood malevolent criminal fewer lure neurology careless what's think
 nighttime Mary merry marry mirror nearer hurry furry horror lore`
 }
 
-Constants.setSpelling(Constants.lexicalSetsEuropean, Constants.consonantsEuropean)
 Js.log(
-  convertText("First second reading.", {withStress: false, withMerger: false, longToShort: true}),
+  convertText(
+    "First second reading.",
+    {
+      withStress: false,
+      withMerger: false,
+      longToShort: true,
+      lexicalSets: Constants.lexicalSetsEuropean,
+      consonants: Constants.consonantsEuropean,
+    },
+  ),
 )

@@ -71,6 +71,7 @@ let loadSpelling = (): (Constants.lexicalSetsType, Constants.consonantsType) => 
   (vowels, consonants)
 }
 
+@inline
 let snd = (tuple: ('a, 'b)): 'b => {
   let (_, second) = tuple
   second
