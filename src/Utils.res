@@ -66,12 +66,8 @@ let classifyJson = (x: Js.Json.t): Js.Json.tagged_t => {
   }
 }
 
-let safeCastToString = json =>
-  if Js.typeof(json) == "string" {
-    Some((Obj.magic((json: Js.Json.t)): string))
-  } else {
-    None
-  }
+let safeCastToString = (json: Js.Json.t): option<string> =>
+  Js.typeof(json) == "string" ? Some(Obj.magic(json)) : None
 
 let mapD = (source, f) => {
   let target = Js.Dict.empty()
