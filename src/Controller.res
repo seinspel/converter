@@ -24,6 +24,7 @@ let loadSpelling = (): (Constants.lexicalSetsType, Constants.consonantsType) => 
     square: ("", (document->getElementById("square-vowel"))["value"]),
     start: ("", (document->getElementById("start-vowel"))["value"]),
     north: ("", (document->getElementById("north-vowel"))["value"]),
+    force: ("", (document->getElementById("force-vowel"))["value"]),
     poor: ("", (document->getElementById("poor-vowel"))["value"]),
     cure: ("", (document->getElementById("cure-vowel"))["value"]),
     fire: ("", (document->getElementById("fire-vowel"))["value"]),
@@ -104,6 +105,7 @@ let writeSpelling = (vowels: Constants.lexicalSetsType, consonants: Constants.co
   (document->getElementById("square-vowel"))["value"] = vowels.square->snd
   (document->getElementById("start-vowel"))["value"] = vowels.start->snd
   (document->getElementById("north-vowel"))["value"] = vowels.north->snd
+  (document->getElementById("force-vowel"))["value"] = vowels.force->snd
   (document->getElementById("poor-vowel"))["value"] = vowels.poor->snd
   (document->getElementById("cure-vowel"))["value"] = vowels.cure->snd
   (document->getElementById("fire-vowel"))["value"] = vowels.fire->snd

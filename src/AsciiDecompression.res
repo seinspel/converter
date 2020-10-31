@@ -62,7 +62,7 @@ let asciiDecompression: Js.Dict.t<string> = %raw(
   'd': 'DH',
   'e': 'F',
   'f': 'G',
-  'g': 'HH',
+  'g': 'H',
   'h': 'J',
   'i': 'K',
   'j': 'L',
@@ -87,6 +87,8 @@ let asciiDecompression: Js.Dict.t<string> = %raw(
   '}': 'II',
   '[': 'IA0',
   ']': 'IA1',
+  '^': 'OHR0',
+  '_': 'OHR1',
   '\'': '\''
 }`
 )
