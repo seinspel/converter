@@ -8,39 +8,33 @@ type conversionSettings = {
   consonants: Constants.consonantsType,
 }
 
-let vowels = [
+let pureVowels = [
   "A",
   "AH",
   "AHY",
-  "AR",
   "AW",
   "EE",
   "EH",
-  "EIR",
   "EW",
-  "EWR",
   "EY",
   "IA",
-  "IER",
   "IH",
   "II",
-  "IRE",
   "O",
   "OA",
   "OH",
-  "OIR",
   "OO",
-  "OOR",
-  "OR",
   "OW",
-  "OWR",
   "OY",
   "U",
   "UH",
-  "UR",
   `ə`,
-  `əR`,
 ]
+
+let rVowels = ["AR", "EIR", "EWR", "IER", "IRE", "OIR", "OOR", "OR", "OWR", "UR", `əR`]
+let partVowels = ["EL", "EM", "EN"]
+
+let vowels = () => pureVowels->Js.Array2.concatMany([rVowels, partVowels])
 // these consonants cannot be pronounced immediately before an L
 // (counterexample: R (curl))
 let unambiguousBeforeL = [
@@ -123,7 +117,7 @@ let unambiguousBeforeR = [
 let longToShortMap: Js.Dict.t<string> = %raw(
   `{
   'AH': 'A',
-  'EY': 'EH',
+  /* 'EY': 'EH', */
   'EE': 'IH',
   'OH': 'O',
   'OO': 'U',
@@ -133,19 +127,30 @@ let longToShortMap: Js.Dict.t<string> = %raw(
 
 let shortVowels = ["A", "EH", "IH", "O", "OA", "U", "UH"]
 
-let isVowel = (phon: option<string>): bool =>
+let splitOffStress = (symbol: string): (string, bool) => {
+  open Js.String2
+  let lastChar = symbol->sliceToEnd(~from=-1)
+  let hasStressMarker = ["0", "1"]->Js.Array2.includes(lastChar)
+  if hasStressMarker {
+    (symbol->slice(~from=0, ~to_=-1), lastChar == "1")
+  } else {
+    (symbol, false)
+  }
+}
+
+let isVowel = (phon: option<string>, ~ending: bool=false, ()): bool =>
   switch phon {
   | None => false
-  | Some(phon) =>
-    vowels->Js.Array2.includes(phon->Js.String2.slice(~from=0, ~to_=-1)) ||
-      (phon === `ə` ||
-      phon === `əR` ||
-      phon === "II")
+  | Some(phon) => {
+      open Js.Array2
+      let (phonNoS, _) = splitOffStress(phon)
+      ending ? pureVowels->includes(phonNoS) : vowels()->includes(phonNoS)
+    }
   }
 
 let countVowels = (phons: array<string>) => {
   open Js.Array2
-  phons->reduce((numVowels, phon) => phon->Some->isVowel ? numVowels + 1 : numVowels, 0)
+  phons->reduce((numVowels, phon) => phon->Some->isVowel() ? numVowels + 1 : numVowels, 0)
 }
 
 type assembleState = {
@@ -159,12 +164,12 @@ type assembleState = {
 let isOpenSyllable = (ahead1: option<string>, ahead2: option<string>): bool =>
   switch ahead1 {
   | None | Some("'") => true
-  | ahead1 when isVowel(ahead1) => true
+  | ahead1 when ahead1->isVowel() => true
   | _ =>
     switch ahead2 {
     | None | Some("'") => false
     | Some(ahead2)
-      when isVowel(Some(ahead2)) &&
+      when isVowel(Some(ahead2), ()) &&
       !(["EW", "EWR"]->Js.Array2.includes(ahead2->Js.String2.slice(~from=0, ~to_=-1))) => true
     | _ => false
     }
@@ -275,20 +280,24 @@ let convertSymbol = (
   | "RR" =>
     switch behind {
     | None => consonants.crv->Some
-    | Some(_) when !isVowel(behind) => consonants.crv->Some
+    | Some(_) when !isVowel(behind, ~ending=true, ()) => consonants.crv->Some
     | _ => consonants.vrv->Some
     }
-  | "S" =>
-    switch (behind, ahead1) {
-    | (Some(_), None) => consonants.vs->Some // ss
-    | (behind, ahead1) when isVowel(behind) && isVowel(ahead1) => consonants.vs->Some // ss
-    | _ => consonants.cs->Some
+  | "S" => {
+      let postVocalic = isVowel(behind, ~ending=true, ())
+      switch (behind, ahead1) {
+      | (Some(_), None) => consonants.vs->Some // end of the word -> ss
+      | (_, ahead1) when postVocalic && ahead1->isVowel() => consonants.vs->Some // ss
+      | _ => consonants.cs->Some // s
+      }
     }
-  | "Z" =>
-    switch (behind, ahead1) {
-    | (behind, ahead1) when !isVowel(behind) && isVowel(ahead1) => consonants.zv->Some // z
-    | (behind, Some(_)) when isVowel(behind) && !isVowel(ahead1) => consonants.zv->Some // ss
-    | _ => consonants.zc->Some
+  | "Z" => {
+      let postVocalic = isVowel(behind, ~ending=true, ())
+      switch (behind, ahead1) {
+      | (_, ahead1) when !postVocalic && ahead1->isVowel() => consonants.zv->Some // z
+      | (_, Some(_)) when postVocalic && !(ahead1->isVowel()) => consonants.zv->Some // z
+      | _ => consonants.zc->Some // s
+      }
     }
   | "B" => consonants.b->maybeRedub
   | "CH" => consonants.ch->maybeRedub
@@ -339,14 +348,12 @@ let processPhoneme = (
   let reduplicate = state.reduplicateNext
   let reduplicateNext = ref(false) // reset
 
-  let hasPrimary = symbol->sliceToEnd(~from=-1) == "1"
-  let hasStressMarker = ["0", "1", "2"]->Js.Array2.includes(symbol->sliceToEnd(~from=-1))
-  let symbolNoS = hasStressMarker ? symbol->slice(~from=0, ~to_=-1) : symbol
+  let (symbolNoS, hasPrimary) = splitOffStress(symbol)
   let stress = withStress && hasPrimary
 
   let (symbolNoS, toAppend) = if settings.longToShort && isOpenSyllable(ahead1, ahead2) {
     switch longToShortMap->safeGetD(symbolNoS) {
-    | Result(newSymbol) => (newSymbol, isVowel(ahead1) ? "'" : "")
+    | Result(newSymbol) => (newSymbol, isVowel(ahead1, ()) ? "'" : "")
     | _ => {
         if shortVowels->Js.Array2.includes(symbolNoS) {
           reduplicateNext := true
