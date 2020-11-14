@@ -114,6 +114,8 @@ let unambiguousBeforeR = [
   "ZH",
 ]
 
+let voicelessCons = ["CH", "F", "K", "P", "S", "SH", "T", "TH"]
+
 let longToShortMap: Js.Dict.t<string> = %raw(
   `{
   'AH': 'A',
@@ -286,7 +288,7 @@ let convertSymbol = (
   | "S" => {
       let postVocalic = isVowel(behind, ~ending=true, ())
       switch (behind, ahead1) {
-      | (Some(_), None) => consonants.vs->Some // end of the word -> ss
+      | (Some(soundBehind), None) when !(voicelessCons->includes(soundBehind)) => consonants.vs->Some // end of the word -> ss
       | (_, ahead1) when postVocalic && ahead1->isVowel() => consonants.vs->Some // ss
       | _ => consonants.cs->Some // s
       }
