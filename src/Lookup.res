@@ -239,7 +239,8 @@ let processText = () => {
   let (lexicalSets, consonants) = if withMacrons {
     (Constants.lexicalsetsMacron, Constants.consonantsMacron)
   } else if withStress {
-    (Constants.lexicalSetsEuropean, Constants.consonantsEuropean)
+    (Constants.lexicalsetsGreek, Constants.consonantsGreek)
+    /* (Constants.lexicalSetsEuropean, Constants.consonantsEuropean) */
   } else {
     let (lexicalSets, consonants) = Controller.loadSpelling()
     (lexicalSets, consonants)

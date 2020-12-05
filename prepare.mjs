@@ -7,6 +7,8 @@ document.getElementById('testcases').addEventListener('click', lookup.tests, fal
 document.getElementById('english-pronunciations').addEventListener('click', () => { controller.setPreset('english') }, false)
 document.getElementById('european').addEventListener('click', () => {controller.setPreset('european') }, false)
 document.getElementById('asian').addEventListener('click', () => { controller.setPreset('asian') }, false)
+document.getElementById('greek').addEventListener('click', () => { controller.setPreset('greek') }, false)
+document.getElementById('russian').addEventListener('click', () => { controller.setPreset('russian') }, false)
 
 // download dictionary
 const oReq = new XMLHttpRequest()

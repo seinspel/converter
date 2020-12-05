@@ -154,6 +154,8 @@ let setPreset = preset => {
   let (vowels, consonants) = switch preset {
   | "european" => (Constants.lexicalSetsEuropean, Constants.consonantsEuropean)
   | "asian" => (Constants.lexicalsetsAsian, Constants.consonantsAsian)
+  | "greek" => (Constants.lexicalsetsGreek, Constants.consonantsGreek)
+  | "russian" => (Constants.lexicalsetsRussian, Constants.consonantsRussian)
   | _ => (Constants.lexicalsetsEnglish, Constants.consonantsEnglish)
   }
   writeSpelling(vowels, consonants)
