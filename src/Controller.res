@@ -34,6 +34,7 @@ let loadSpelling = (): (Constants.lexicalSetsType, Constants.consonantsType) => 
     happy: (document->getElementById("happy-vowel"))["value"],
     letter: (document->getElementById("letter-vowel"))["value"],
     comma: (document->getElementById("comma-vowel"))["value"],
+    seperator: "'",
   }
   let consonants: Constants.consonantsType = {
     b: (document->getElementById("b-consonant"))["value"],

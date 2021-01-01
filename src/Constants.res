@@ -31,6 +31,7 @@ type lexicalSetsType = {
   happy: string,
   letter: string,
   comma: string,
+  seperator: string,
 }
 
 type consonantsType = {
@@ -104,6 +105,7 @@ let lexicalSetsEuropean = {
   happy: "i",
   letter: "er",
   comma: "e",
+  seperator: "'",
 }
 
 let consonantsEuropean = {
@@ -174,6 +176,7 @@ let lexicalsetsMacron = {
   happy: "i",
   letter: "ur",
   comma: "e",
+  seperator: "'",
 }
 
 let consonantsMacron = {
@@ -244,6 +247,7 @@ let lexicalsetsAsian = {
   happy: "i",
   letter: "er",
   comma: "e",
+  seperator: "'",
 }
 
 let consonantsAsian = {
@@ -314,6 +318,7 @@ let lexicalsetsEnglish = {
   happy: "i",
   letter: "yr",
   comma: "e",
+  seperator: "'",
 }
 
 let consonantsEnglish = {
@@ -373,17 +378,18 @@ let lexicalsetsGreek = {
   near: (`ίρ`, `ιρ`),
   square: (`έρ`, `ερ`),
   start: (`άρ`, `αρ`),
-  north: (`όρ`, `ορ`),
-  force: (`όυρ`, `ουρ`),
+  north: (`όαρ`, `οαρ`),
+  force: (`όρ`, `ορ`),
   poor: (`ύρ`, `υρ`),
   cure: (`ιύρ`, `ιυρ`),
   fire: (`άιρ`, `αιρ`),
   flour: (`άυρ`, `αυρ`),
   coir: (`όιρ`, `οιρ`),
-  ian: (`ΐα`, `ϊα`),
+  ian: (`ία`, `ια`),
   happy: `ι`,
   letter: `ερ`,
   comma: `ε`,
+  seperator: `·`,
 }
 
 let consonantsGreek = {
@@ -398,7 +404,7 @@ let consonantsGreek = {
   f: `φ`,
   g: `γ`,
   hh: `η`,
-  j: `δς`,
+  j: `δχ`,
   k: `κ`,
   l: `λ`,
   m: `μ`,
@@ -413,12 +419,12 @@ let consonantsGreek = {
   t: `τ`,
   th: `θ`,
   v: `ψ`,
-  w: `ω`,
-  wh: `ωη`,
-  y: `χ`,
+  w: `ϋ`,
+  wh: `ϋη`,
+  y: `ϊ`,
   zc: `ζ`,
   zv: `ζ`,
-  zh: `ς`,
+  zh: `χ`,
 }
 
 let lexicalsetsRussian = {
@@ -454,6 +460,7 @@ let lexicalsetsRussian = {
   happy: `и`,
   letter: `р`,
   comma: `е`,
+  seperator: "'",
 }
 
 let consonantsRussian = {

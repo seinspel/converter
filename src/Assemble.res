@@ -288,7 +288,8 @@ let convertSymbol = (
   | "S" => {
       let postVocalic = isVowel(behind, ~ending=true, ())
       switch (behind, ahead1) {
-      | (Some(soundBehind), None) when !(voicelessCons->includes(soundBehind)) => consonants.vs->Some // end of the word -> ss
+      | (Some(soundBehind), None) when !(voicelessCons->includes(soundBehind)) =>
+        consonants.vs->Some // end of the word -> ss
       | (_, ahead1) when postVocalic && ahead1->isVowel() => consonants.vs->Some // ss
       | _ => consonants.cs->Some // s
       }
@@ -348,27 +349,31 @@ let processPhoneme = (
 ) => {
   open Js.String2
   let reduplicate = state.reduplicateNext
-  let reduplicateNext = ref(false) // reset
+  let reduplicateNext = ref(false)
 
-  let (symbolNoS, hasPrimary) = splitOffStress(symbol)
+  let (symbolNoS_, hasPrimary) = splitOffStress(symbol)
   let stress = withStress && hasPrimary
 
-  let (symbolNoS, toAppend) = if settings.longToShort && isOpenSyllable(ahead1, ahead2) {
-    switch longToShortMap->safeGetD(symbolNoS) {
-    | Result(newSymbol) => (newSymbol, isVowel(ahead1, ()) ? "'" : "")
-    | _ => {
-        if shortVowels->Js.Array2.includes(symbolNoS) {
-          reduplicateNext := true
+  let symbolNoS = ref(symbolNoS_)
+  let toAppend = ref("")
+
+  if settings.longToShort && isOpenSyllable(ahead1, ahead2) {
+    switch longToShortMap->safeGetD(symbolNoS.contents) {
+    | Result(shortVersion) => {
+        symbolNoS := shortVersion
+        if isVowel(ahead1, ()) {
+          toAppend := settings.lexicalSets.seperator
         }
-        (symbolNoS, "")
+      }
+    | _ =>
+      if shortVowels->Js.Array2.includes(symbolNoS.contents) {
+        reduplicateNext := true
       }
     }
-  } else {
-    (symbolNoS, "")
   }
 
   let newLetters = convertSymbol(
-    ~symbolNoS,
+    ~symbolNoS=symbolNoS.contents,
     ~behind,
     ~ahead1,
     ~stress,
@@ -387,10 +392,10 @@ let processPhoneme = (
   let separator = switch (lastOld, firstNew) {
   | (Some(lastOld), Some(firstNew)) =>
     if (
-      (`aeiouyáéíóúýāēīōū`->includes(lastOld) && lastOld == firstNew) ||
-        ((lastOld == "c" || lastOld == "s") && firstNew == "h")
+      /* (`aeiouyáéíóúýāēīōū`->includes(lastOld) && lastOld == firstNew) || */
+      lastOld == firstNew || ((lastOld == "c" || lastOld == "s") && firstNew == "h")
     ) {
-      "'"
+      settings.lexicalSets.seperator
     } else if lastOld == "d" && firstNew == "j" {
       "h"
     } else {
@@ -399,7 +404,7 @@ let processPhoneme = (
   | _ => ""
   }
 
-  let result = state.result ++ separator ++ newLetters ++ toAppend
+  let result = state.result ++ separator ++ newLetters ++ toAppend.contents
 
   {result: result, reduplicateNext: reduplicateNext.contents}
 }
