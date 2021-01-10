@@ -155,7 +155,7 @@ let findBaseForm = (chunk: string): option<words> => {
   | (_, "LY", _) => {
       let resultLLY = if chunkLast3 == "LLY" {
         addSuffix(
-          lookup(chunk->slice(~from=0, ~to_=-3)),
+          lookup(chunk->slice(~from=0, ~to_=-2)),
           ~suffix="}" /* II */,
           ~identifiers=["j"] /* adjective */,
         )
@@ -214,7 +214,7 @@ let convertText = (text: string, settings: conversionSettings): string => {
       | None =>
         switch findBaseForm(chunk) {
         // no entry was found see, if we can find a base form
-        | None => `${result}<${chunk}>` // we didn't find anything -> abort this
+        | None => result ++ chunk // we didn't find anything -> abort this
         | Some(lookupResults) => result ++ convertToSpelling(chunk, lookupResults, settings)
         }
       | Some(lookupResults) => {

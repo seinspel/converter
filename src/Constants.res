@@ -387,7 +387,7 @@ let lexicalsetsGreek = {
   coir: (`όιρ`, `οιρ`),
   ian: (`ία`, `ια`),
   happy: `ι`,
-  letter: `ερ`,
+  letter: `υρ`,
   comma: `ε`,
   seperator: `·`,
 }
@@ -420,7 +420,7 @@ let consonantsGreek = {
   th: `θ`,
   v: `ψ`,
   w: `ϋ`,
-  wh: `ϋη`,
+  wh: `ηϋ`,
   y: `ϊ`,
   zc: `ζ`,
   zv: `ζ`,
