@@ -119,7 +119,7 @@ let voicelessCons = ["CH", "F", "K", "P", "S", "SH", "T", "TH"]
 let longToShortMap: Js.Dict.t<string> = %raw(
   `{
   'AH': 'A',
-  /* 'EY': 'EH', */
+  'EY': 'EH',
   'EE': 'IH',
   'OH': 'O',
   'OO': 'U',
