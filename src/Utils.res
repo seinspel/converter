@@ -1,7 +1,7 @@
 type globalDocument
-type domElement = {@bs.set "value": string, "checked": bool}
-@bs.send external getElementById: (globalDocument, string) => domElement = "getElementById"
-@bs.val external document: globalDocument = "document"
+type domElement = {@set "value": string, "checked": bool}
+@send external getElementById: (globalDocument, string) => domElement = "getElementById"
+@val external document: globalDocument = "document"
 
 type dictLookup<'a> = NoResult | Result('a)
 
@@ -9,7 +9,7 @@ type dictLookup<'a> = NoResult | Result('a)
 This function will return an invalid value ([undefined]) if [key] does not exist in [dict]. It
 will not throw an error.
 */
-@bs.get_index external unsafeGetD: (Js.Dict.t<'a>, string) => 'a = ""
+@get_index external unsafeGetD: (Js.Dict.t<'a>, string) => 'a = ""
 
 /* * [get dict key] returns the value associated with [key] in [dict] */
 let safeGetD = (dict: Js.Dict.t<'u>, k: string): dictLookup<'u> => {
@@ -20,8 +20,8 @@ let safeGetD = (dict: Js.Dict.t<'u>, k: string): dictLookup<'u> => {
   }
 }
 
-@bs.val external values: Js.Dict.t<'a> => array<'a> = "Object.values"
-@bs.val external entries: Js.Dict.t<'a> => array<(string, 'a)> = "Object.entries"
+@val external values: Js.Dict.t<'a> => array<'a> = "Object.values"
+@val external entries: Js.Dict.t<'a> => array<(string, 'a)> = "Object.entries"
 
 let unwrapS = (o: option<string>, d: string): string => {
   switch o {

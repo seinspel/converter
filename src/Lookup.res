@@ -4,7 +4,7 @@ open Assemble
 type entry = Single(string) | Multiple(array<string>) | Variants(Js.Dict.t<string>)
 
 type request
-@bs.get external responseText: request => string = "responseText"
+@get external responseText: request => string = "responseText"
 
 let dict: ref<Js.Dict.t<Js.Json.t>> = ref(Js.Dict.empty())
 
@@ -206,7 +206,7 @@ let convertText = (text: string, settings: conversionSettings): string => {
   chunks->reduce((result, maybeChunk) =>
     switch maybeChunk {
     | None => result
-    | Some(chunk) when !Js.Re.test_(%re("/[a-zA-Z]/"), chunk) =>
+    | Some(chunk) if !Js.Re.test_(%re("/[a-zA-Z]/"), chunk) =>
       // chunk is a special character, like a space or a comma
       result ++ chunk
     | Some(chunk) =>

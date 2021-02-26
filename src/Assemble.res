@@ -116,16 +116,14 @@ let unambiguousBeforeR = [
 
 let voicelessCons = ["CH", "F", "K", "P", "S", "SH", "T", "TH"]
 
-let longToShortMap: Js.Dict.t<string> = %raw(
-  `{
+let longToShortMap: Js.Dict.t<string> = %raw(`{
   'AH': 'A',
   'EY': 'EH',
   'EE': 'IH',
   'OH': 'O',
   'OO': 'U',
   'ə': 'A'
-}`
-)
+}`)
 
 let shortVowels = ["A", "EH", "IH", "O", "OA", "U", "UH"]
 
@@ -166,12 +164,12 @@ type assembleState = {
 let isOpenSyllable = (ahead1: option<string>, ahead2: option<string>): bool =>
   switch ahead1 {
   | None | Some("'") => true
-  | ahead1 when ahead1->isVowel() => true
+  | ahead1 if ahead1->isVowel() => true
   | _ =>
     switch ahead2 {
     | None | Some("'") => false
     | Some(ahead2)
-      when isVowel(Some(ahead2), ()) &&
+      if isVowel(Some(ahead2), ()) &&
       !(["EW", "EWR"]->Js.Array2.includes(ahead2->Js.String2.slice(~from=0, ~to_=-1))) => true
     | _ => false
     }
@@ -259,17 +257,17 @@ let convertSymbol = (
   // syllabic consonants
   | "EL" =>
     switch (ahead1, behind) {
-    | (None, Some(behind)) when unambiguousBeforeL->includes(behind) => consonants.el->Some
+    | (None, Some(behind)) if unambiguousBeforeL->includes(behind) => consonants.el->Some
     | _ => Some(lexicalSets.comma ++ consonants.l)
     }
   | "EM" =>
     switch (ahead1, behind) {
-    | (None, Some(behind)) when unambiguousBeforeM->includes(behind) => consonants.em->Some
+    | (None, Some(behind)) if unambiguousBeforeM->includes(behind) => consonants.em->Some
     | _ => Some(lexicalSets.comma ++ consonants.m)
     }
   | "EN" =>
     switch (ahead1, behind) {
-    | (None, Some(behind)) | (Some("'"), Some(behind)) when unambiguousBeforeN->includes(behind) =>
+    | (None, Some(behind)) | (Some("'"), Some(behind)) if unambiguousBeforeN->includes(behind) =>
       consonants.en->Some
     | _ => Some(lexicalSets.comma ++ consonants.n)
     }
@@ -282,23 +280,22 @@ let convertSymbol = (
   | "RR" =>
     switch behind {
     | None => consonants.crv->Some
-    | Some(_) when !isVowel(behind, ~ending=true, ()) => consonants.crv->Some
+    | Some(_) if !isVowel(behind, ~ending=true, ()) => consonants.crv->Some
     | _ => consonants.vrv->Some
     }
   | "S" => {
       let postVocalic = isVowel(behind, ~ending=true, ())
       switch (behind, ahead1) {
-      | (Some(soundBehind), None) when !(voicelessCons->includes(soundBehind)) =>
-        consonants.vs->Some // end of the word -> ss
-      | (_, ahead1) when postVocalic && ahead1->isVowel() => consonants.vs->Some // ss
+      | (Some(soundBehind), None) if !(voicelessCons->includes(soundBehind)) => consonants.vs->Some // end of the word -> ss
+      | (_, ahead1) if postVocalic && ahead1->isVowel() => consonants.vs->Some // ss
       | _ => consonants.cs->Some // s
       }
     }
   | "Z" => {
       let postVocalic = isVowel(behind, ~ending=true, ())
       switch (behind, ahead1) {
-      | (_, ahead1) when !postVocalic && ahead1->isVowel() => consonants.zv->Some // z
-      | (_, Some(_)) when postVocalic && !(ahead1->isVowel()) => consonants.zv->Some // z
+      | (_, ahead1) if !postVocalic && ahead1->isVowel() => consonants.zv->Some // z
+      | (_, Some(_)) if postVocalic && !(ahead1->isVowel()) => consonants.zv->Some // z
       | _ => consonants.zc->Some // s
       }
     }
@@ -329,7 +326,7 @@ let convertSymbol = (
       lexicalSets.comma->Some
     } else if symbolNoS == `əR` {
       switch (ahead1, behind) {
-      | (None, Some(behind)) when unambiguousBeforeR->includes(behind) => consonants.er->Some
+      | (None, Some(behind)) if unambiguousBeforeR->includes(behind) => consonants.er->Some
       | _ => lexicalSets.letter->Some
       }
     } else {
