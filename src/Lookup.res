@@ -232,10 +232,12 @@ let convertText = (text: string, settings: conversionSettings): string => {
 
 let processText = () => {
   let text = (document->getElementById("input"))["value"]
-  let withMerger = (document->getElementById("withMerger"))["checked"]
+  // let withMerger = (document->getElementById("withMerger"))["checked"]
+  let withMerger = false
   let withStress = (document->getElementById("withStress"))["checked"]
   let withMacrons = (document->getElementById("withMacrons"))["checked"]
   let longToShort = (document->getElementById("longToShort"))["checked"]
+  let impliedLong = (document->getElementById("impliedLong"))["checked"]
   let (lexicalSets, consonants) = if withMacrons {
     (Constants.lexicalsetsMacron, Constants.consonantsMacron)
   } else if withStress {
@@ -251,6 +253,7 @@ let processText = () => {
       withStress: withStress,
       withMerger: withMerger,
       longToShort: longToShort,
+      impliedLong: impliedLong,
       lexicalSets: lexicalSets,
       consonants: consonants,
     },

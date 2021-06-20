@@ -4,6 +4,7 @@ type conversionSettings = {
   withStress: bool,
   withMerger: bool,
   longToShort: bool,
+  impliedLong: bool,
   lexicalSets: Constants.lexicalSetsType,
   consonants: Constants.consonantsType,
 }
@@ -354,7 +355,10 @@ let processPhoneme = (
   let symbolNoS = ref(symbolNoS_)
   let toAppend = ref("")
 
-  if settings.longToShort && isOpenSyllable(ahead1, ahead2) {
+  if (
+    (settings.longToShort && isOpenSyllable(ahead1, ahead2)) ||
+      (settings.impliedLong && ahead1 == None)
+  ) {
     switch longToShortMap->safeGetD(symbolNoS.contents) {
     | Result(shortVersion) => {
         symbolNoS := shortVersion
