@@ -128,6 +128,20 @@ let longToShortMap: Js.Dict.t<string> = %raw(`{
 
 let shortVowels = ["A", "EH", "IH", "O", "OA", "U", "UH"]
 
+/**
+ * for-loops are unfortunately much faster than forEach or reduce in JS
+ *
+ * The function passed in should ideally be @inline
+ */
+@inline
+let reduceLoop = (a, f, x) => {
+  let r = ref(x)
+  for i in 0 to Js.Array2.length(a) - 1 {
+    r := f(r.contents, Js.Array2.unsafe_get(a, i), i)
+  }
+  r.contents
+}
+
 let splitOffStress = (symbol: string): (string, bool) => {
   open Js.String2
   let lastChar = symbol->sliceToEnd(~from=-1)
@@ -149,15 +163,13 @@ let isVowel = (phon: option<string>, ~ending: bool=false, ()): bool =>
     }
   }
 
-let countVowels = (phons: array<string>) => {
-  open Js.Array2
-  phons->reduce((numVowels, phon) => phon->Some->isVowel() ? numVowels + 1 : numVowels, 0)
-}
+let countVowels = (phons: array<string>) =>
+  phons->reduceLoop(
+    @inline (numVowels, phon, _) => phon->Some->isVowel() ? numVowels + 1 : numVowels,
+    0,
+  )
 
-type assembleState = {
-  result: string,
-  reduplicateNext: bool,
-}
+type assembleState = {result: string, reduplicateNext: bool}
 
 /**
  * Try to find out if the given vowel belongs to an open syllable.
@@ -176,6 +188,7 @@ let isOpenSyllable = (ahead1: option<string>, ahead2: option<string>): bool =>
     }
   }
 
+@inline
 let maybeFst = (tuple: (string, string), takeFst: bool): option<string> => {
   let (fst, snd) = tuple
   Some(takeFst ? fst : snd)
@@ -410,32 +423,35 @@ let processPhoneme = (
   {result: result, reduplicateNext: reduplicateNext.contents}
 }
 
+@inline
+let longToShort = (newPhons, symbol, _) => {
+  open Js.Array2
+  open Js.String2
+  if symbol->Js.String2.slice(~from=0, ~to_=-1) == "IA" {
+    // replace the IA symbol with IH + ə,
+    // so that the right representation of ə can be chosen
+    newPhons->push("IH" ++ symbol->sliceToEnd(~from=-1))->ignore
+    newPhons->push(`ə`)->ignore
+  } else {
+    newPhons->push(symbol)->ignore
+  }
+  newPhons
+}
+
 /**
  * Assemble the spelling from the pronunciation
  */
 let assemble = (phons: array<string>, settings: conversionSettings): string => {
-  open Js.Array2
-  open Js.String2
   let initialState = {result: "", reduplicateNext: false}
   let numSyllables = countVowels(phons)
   let withStress = settings.withStress && numSyllables >= 2
   let phons = if settings.longToShort {
-    phons->reduce((newPhons, symbol) => {
-      if symbol->Js.String2.slice(~from=0, ~to_=-1) == "IA" {
-        // replace the IA symbol with IH + ə,
-        // so that the right representation of ə can be chosen
-        newPhons->push("IH" ++ symbol->sliceToEnd(~from=-1))->ignore
-        newPhons->push(`ə`)->ignore
-      } else {
-        newPhons->push(symbol)->ignore
-      }
-      newPhons
-    }, [])
+    phons->reduceLoop(longToShort, [])
   } else {
     phons
   }
 
-  let finalState = phons->reducei((state, symbol, i) => {
+  let finalState = phons->reduceLoop(@inline (state, symbol, i) => {
     let ahead1: option<string> = phons->safeGet(i + 1)
     let ahead2: option<string> = phons->safeGet(i + 2)
     let behind1: option<string> = phons->safeGet(i - 1)
