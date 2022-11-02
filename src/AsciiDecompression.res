@@ -1,5 +1,4 @@
-let asciiDecompression: Js.Dict.t<string> = %raw(
-  `{
+let asciiDecompression: Js.Dict.t<string> = %raw(`{
   '!': 'A0',
   '#': 'A1',
   '$': 'AH0',
@@ -90,5 +89,4 @@ let asciiDecompression: Js.Dict.t<string> = %raw(
   '^': 'OHR0',
   '_': 'OHR1',
   '\'': '\''
-}`
-)
+}`)

@@ -1,2 +1,2 @@
-let loadSpelling: () => (Constants.lexicalSetsType, Constants.consonantsType)
-let setPreset: string => ()
+let loadSpelling: unit => (Constants.lexicalSetsType, Constants.consonantsType)
+let setPreset: string => unit

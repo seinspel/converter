@@ -111,6 +111,7 @@ let findBaseForm = (chunk: string): option<words> => {
       }
       addSuffix(result, ~suffix="=m" /* IH0 NG */, ~identifiers=["v"] /* verb */)
     }
+
   | (_, _, "S") => {
       let resultSS = if chunkLast3 == "S'S" {
         addSuffix(
@@ -142,9 +143,11 @@ let findBaseForm = (chunk: string): option<words> => {
           | x => x
           }
         }
+
       | x => x
       }
     }
+
   | (_, "ED", _) => {
       let result = switch lookup(chunk->slice(~from=0, ~to_=-2)) {
       | None => lookup(chunk->slice(~from=0, ~to_=-1))
@@ -152,6 +155,7 @@ let findBaseForm = (chunk: string): option<words> => {
       }
       addSuffix(result, ~suffix="c" /* D */, ~identifiers=["v"] /* verb */)
     }
+
   | (_, "LY", _) => {
       let resultLLY = if chunkLast3 == "LLY" {
         addSuffix(
@@ -172,10 +176,14 @@ let findBaseForm = (chunk: string): option<words> => {
       | x => x
       }
     }
+
   | _ => None
   }
 }
 
+/**
+ * Convert a single word.
+ */
 let convertToSpelling = (
   chunk: string,
   lookupResults: words,
@@ -202,7 +210,7 @@ let convertText = (text: string, settings: conversionSettings): string => {
   open Js.String2
   open Js.Array2
   let chunks = text->replaceByRe(%re("/’/gi"), "'")->splitByRe(%re("/([^a-zA-Z'])/"))
-  Js.log(chunks)
+  //Js.log(chunks)
   chunks->reduce((result, maybeChunk) =>
     switch maybeChunk {
     | None => result
@@ -250,12 +258,12 @@ let processText = () => {
   let result = convertText(
     text,
     {
-      withStress: withStress,
-      withMerger: withMerger,
-      longToShort: longToShort,
-      impliedLong: impliedLong,
-      lexicalSets: lexicalSets,
-      consonants: consonants,
+      withStress,
+      withMerger,
+      longToShort,
+      impliedLong,
+      lexicalSets,
+      consonants,
     },
   )
   let output = document->getElementById("output")

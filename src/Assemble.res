@@ -169,8 +169,6 @@ let countVowels = (phons: array<string>) =>
     0,
   )
 
-type assembleState = {result: string, reduplicateNext: bool}
-
 /**
  * Try to find out if the given vowel belongs to an open syllable.
  */
@@ -305,6 +303,7 @@ let convertSymbol = (
       | _ => consonants.cs->Some // s
       }
     }
+
   | "Z" => {
       let postVocalic = isVowel(behind, ~ending=true, ())
       switch (behind, ahead1) {
@@ -313,6 +312,7 @@ let convertSymbol = (
       | _ => consonants.zc->Some // s
       }
     }
+
   | "B" => consonants.b->maybeRedub
   | "CH" => consonants.ch->maybeRedub
   | "D" => consonants.d->maybeRedub
@@ -349,6 +349,8 @@ let convertSymbol = (
   }
 }
 
+type assembleState = {result: string, reduplicateNext: bool, isFirstSyllable: bool}
+
 let processPhoneme = (
   ~symbol: string,
   ~behind: option<string>,
@@ -363,7 +365,8 @@ let processPhoneme = (
   let reduplicateNext = ref(false)
 
   let (symbolNoS_, hasPrimary) = splitOffStress(symbol)
-  let stress = withStress && hasPrimary
+  let stress = withStress && hasPrimary && !state.isFirstSyllable
+  let isFirstSyllable = state.isFirstSyllable ? !(symbol->Some->isVowel()) : false
 
   let symbolNoS = ref(symbolNoS_)
   let toAppend = ref("")
@@ -379,6 +382,7 @@ let processPhoneme = (
           toAppend := settings.lexicalSets.seperator
         }
       }
+
     | _ =>
       if shortVowels->Js.Array2.includes(symbolNoS.contents) {
         reduplicateNext := true
@@ -420,7 +424,7 @@ let processPhoneme = (
 
   let result = state.result ++ separator ++ newLetters ++ toAppend.contents
 
-  {result: result, reduplicateNext: reduplicateNext.contents}
+  {result, reduplicateNext: reduplicateNext.contents, isFirstSyllable}
 }
 
 @inline
@@ -431,7 +435,7 @@ let longToShort = (newPhons, symbol, _) => {
     // replace the IA symbol with IH + ə,
     // so that the right representation of ə can be chosen
     newPhons->push("IH" ++ symbol->sliceToEnd(~from=-1))->ignore
-    newPhons->push(`ə`)->ignore
+    newPhons->push("ə")->ignore
   } else {
     newPhons->push(symbol)->ignore
   }
@@ -439,10 +443,10 @@ let longToShort = (newPhons, symbol, _) => {
 }
 
 /**
- * Assemble the spelling from the pronunciation
+ * Assemble the spelling of a word from the pronunciation.
  */
 let assemble = (phons: array<string>, settings: conversionSettings): string => {
-  let initialState = {result: "", reduplicateNext: false}
+  let initialState = {result: "", reduplicateNext: false, isFirstSyllable: true}
   let numSyllables = countVowels(phons)
   let withStress = settings.withStress && numSyllables >= 2
   let phons = if settings.longToShort {

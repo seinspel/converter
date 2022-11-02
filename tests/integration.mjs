@@ -9,7 +9,7 @@ var dict_json = {
 lookup.loadDict({responseText: JSON.stringify(dict_json)});
 
 var settings = {
-  withStress: false,
+  withStress: true,
   withMerger: false,
   longToShort: true,
   lexicalSets: constants.lexicalSetsEuropean,
