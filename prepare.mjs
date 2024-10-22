@@ -9,6 +9,7 @@ document.getElementById('european').addEventListener('click', () => {controller.
 document.getElementById('asian').addEventListener('click', () => { controller.setPreset('asian') }, false)
 document.getElementById('greek').addEventListener('click', () => { controller.setPreset('greek') }, false)
 document.getElementById('russian').addEventListener('click', () => { controller.setPreset('russian') }, false)
+document.getElementById('ipa').addEventListener('click', () => { controller.setPreset('ipa') }, false)
 
 // download dictionary
 const oReq = new XMLHttpRequest()

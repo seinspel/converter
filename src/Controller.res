@@ -157,6 +157,7 @@ let setPreset = preset => {
   | "asian" => (Constants.lexicalsetsAsian, Constants.consonantsAsian)
   | "greek" => (Constants.lexicalsetsGreek, Constants.consonantsGreek)
   | "russian" => (Constants.lexicalsetsRussian, Constants.consonantsRussian)
+  | "ipa" => (Constants.lexicalsetsIPA, Constants.consonantsIPA)
   | _ => (Constants.lexicalsetsEnglish, Constants.consonantsEnglish)
   }
   writeSpelling(vowels, consonants)
